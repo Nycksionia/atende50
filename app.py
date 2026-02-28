@@ -78,8 +78,9 @@ def processar_login():
 # Crie a rota de Logout (Sair)
 @app.route('/logout')
 def logout():
-    session.clear() # Limpa o "carimbo"
-    return redirect(url_for('exibir_login'))
+    session.clear()  # Limpa os dados da sessão por segurança
+    # Altere 'exibir_index' pelo nome da sua função que carrega a index.html
+    return redirect(url_for('exibir_index'))
 
 # 3. Rota da Página Mestre - PROTEGIDA
 @app.route('/area-restrita')
