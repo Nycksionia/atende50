@@ -273,6 +273,19 @@ def atualizar_status_chamado(chamado_id):
     
     return redirect(url_for('listar_chamados'))
 
+with app.app_context():
+    db.create_all()
+    if not Usuario.query.filter_by(email='admin@atende50.com').first():
+        novo_admin = Usuario(nome='Admin', email='admin@atende50.com', senha='123')
+        db.session.add(novo_admin)
+        db.session.commit()
+        
+@app.route('/verificar_usuarios')
+def verificar_usuarios():
+    usuarios = Usuario.query.all()
+    lista_emails = [u.email for u in usuarios]
+    return f"Usuários no BD do Render: {lista_emails}"
+
 # Cria o banco e as tabelas
 with app.app_context():
     db.create_all()
