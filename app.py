@@ -4,6 +4,7 @@ from sqlalchemy import func
 from datetime import datetime
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'atende50_secret_key_fixa'
 app.config['SECRET_KEY'] = 'atende50_projeto_2026'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///atende50.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -272,13 +273,6 @@ def atualizar_status_chamado(chamado_id):
         flash(f'Status do chamado #{chamado_id} atualizado para {novo_status}!')
     
     return redirect(url_for('listar_chamados'))
-
-with app.app_context():
-    db.create_all()
-    if not Usuario.query.filter_by(email='admin@atende50.com').first():
-        novo_admin = Usuario(nome='Admin', email='admin@atende50.com', senha='123')
-        db.session.add(novo_admin)
-        db.session.commit()
         
 @app.route('/verificar_usuarios')
 def verificar_usuarios():
@@ -288,7 +282,18 @@ def verificar_usuarios():
 
 # Cria o banco e as tabelas
 with app.app_context():
-    db.create_all()
+    try:
+        db.create_all()
+        if not Usuario.query.filter_by(email='admin@atende50.com').first():
+            novo_admin = Usuario(nome='Admin', email='admin@atende50.com', senha='123')
+            db.session.add(novo_admin)
+            db.session.commit()
+            print(">>> Banco de dados inicializado e Admin criado!")
+    except Exception as e:
+        print(f">>> Erro ao inicializar banco: {e}")
+
+if __name__ == "__main__":
+    app.run()
 
 if __name__ == '__main__':
     app.run(debug=True)
