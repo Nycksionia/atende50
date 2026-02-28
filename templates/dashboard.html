@@ -50,81 +50,77 @@
             </a>
         </div>
     </aside>
-    <div class="flex-1 flex flex-col h-screen overflow-hidden">
-        <header class="bg-white border-b p-4 lg:hidden">
-        </header>
 
-        <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-slate-50">
-            <h1 class="text-2xl font-bold mb-6">Visão Geral</h1>
+    <main class="flex-1 flex flex-col min-w-0 bg-slate-50 overflow-hidden">
 
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-auto max-w-full">
-                <div class="min-w-[800px] p-4">
-
-                    <div class="grid grid-cols-3 gap-6">
-                    </div>
-
-                </div>
-            </div>
-        </main>
-    </div>
-    <button onclick="toggleSidebar()"
-        class="lg:hidden fixed bottom-6 right-6 z-[60] bg-blue-700 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center">
-        <i class="fas fa-bars text-xl"></i>
-    </button>
-
-    <main class="flex-1 flex flex-col min-w-0 bg-slate-50">
-        <header class="bg-white border-b border-slate-200 py-4 px-10 flex justify-end items-center shadow-sm shrink-0">
+        <header
+            class="bg-white border-b border-slate-200 py-4 px-6 md:px-10 flex justify-between lg:justify-end items-center shadow-sm shrink-0">
+            <button onclick="toggleSidebar()" class="lg:hidden bg-slate-900 text-white p-2 rounded-lg">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="flex items-center space-x-4">
-                <span class="text-slate-500 italic text-sm">Painel de Gestão</span>
+                <span class="text-slate-500 italic text-sm hidden sm:inline">Painel de Gestão</span>
                 <div class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700">
                     <i class="fas fa-chart-pie"></i>
                 </div>
             </div>
         </header>
 
-        <div class="p-10 overflow-y-auto">
-            <header class="mb-8">
-                <h1 class="text-3xl font-bold text-slate-800">Visão Geral do Portal</h1>
-                <p class="text-slate-500">Bem-vindo, Nycksion. Aqui está o desempenho do mês.</p>
-            </header>
+        <div class="p-4 md:p-10 overflow-auto h-full">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-blue-600">
-                    <div class="text-slate-400 text-sm font-bold uppercase">Prof50+ Cadastrados</div>
-                    <div class="text-3xl font-black text-slate-800">{{ total_profs }}</div>
+            <div class="min-w-[1000px] pb-10">
+
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold text-slate-800">Visão Geral do Portal</h1>
+                    <p class="text-slate-500">Bem-vindo, Nycksion. Aqui está o desempenho do mês.</p>
+                </header>
+
+                <div class="grid grid-cols-4 gap-6 mb-10">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-blue-600">
+                        <div class="text-slate-400 text-sm font-bold uppercase">Prof50+</div>
+                        <div class="text-3xl font-black text-slate-800">{{ total_profs }}</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-orange-500">
+                        <div class="text-slate-400 text-sm font-bold uppercase">Clientes</div>
+                        <div class="text-3xl font-black text-slate-800">{{ total_leads }}</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-green-500">
+                        <div class="text-slate-400 text-sm font-bold uppercase">Faturamento</div>
+                        <div class="text-3xl font-black text-slate-800">R$ {{ "%.2f"|format(faturamento_total) }}</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-purple-500">
+                        <div class="text-slate-400 text-sm font-bold uppercase">Atendimentos</div>
+                        <div class="text-3xl font-black text-slate-800">{{ total_atendimentos }}</div>
+                    </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-orange-500">
-                    <div class="text-slate-400 text-sm font-bold uppercase">Clientes Ativos</div>
-                    <div class="text-3xl font-black text-slate-800">{{ total_leads }}</div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-4">Crescimento de Atendimentos</h3>
+                        <canvas id="atendimentosChart"></canvas>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-4">Áreas mais Procuradas</h3>
+                        <div class="max-w-[300px] mx-auto">
+                            <canvas id="areasChart"></canvas>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-green-500">
-                    <div class="text-slate-400 text-sm font-bold uppercase">Faturamento Portal</div>
-                    <div class="text-3xl font-black text-slate-800">R$ {{ "%.2f"|format(faturamento_total) }}</div>
-                </div>
-
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-purple-500">
-                    <div class="text-slate-400 text-sm font-bold uppercase">Atendimentos</div>
-                    <div class="text-3xl font-black text-slate-800">{{ total_atendimentos }}</div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="font-bold text-slate-700 mb-4">Crescimento de Atendimentos</h3>
-                    <canvas id="atendimentosChart"></canvas>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="font-bold text-slate-700 mb-4">Áreas mais Procuradas</h3>
-                    <canvas id="areasChart"></canvas>
-                </div>
             </div>
         </div>
     </main>
 
     <script>
-        // Configuração dos Gráficos
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('fixed');
+            sidebar.classList.toggle('inset-0');
+            sidebar.classList.toggle('flex');
+        }
+
+        // Gráfico de Linha
         const ctx1 = document.getElementById('atendimentosChart').getContext('2d');
         new Chart(ctx1, {
             type: 'line',
@@ -138,9 +134,11 @@
                     fill: true,
                     backgroundColor: 'rgba(29, 78, 216, 0.1)'
                 }]
-            }
+            },
+            options: { responsive: true }
         });
 
+        // Gráfico de Rosca
         const ctx2 = document.getElementById('areasChart').getContext('2d');
         new Chart(ctx2, {
             type: 'doughnut',
@@ -150,7 +148,8 @@
                     data: [40, 25, 20, 15],
                     backgroundColor: ['#1d4ed8', '#f97316', '#22c55e', '#a855f7']
                 }]
-            }
+            },
+            options: { responsive: true }
         });
     </script>
 </body>
