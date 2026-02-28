@@ -80,7 +80,7 @@ def processar_login():
 def logout():
     session.clear()  # Limpa os dados da sessão por segurança
     # Altere 'exibir_index' pelo nome da sua função que carrega a index.html
-    return redirect(url_for('exibir_index'))
+    return redirect(url_for('index'))
 
 # 3. Rota da Página Mestre - PROTEGIDA
 @app.route('/area-restrita')
