@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Prof50+ | Atende50+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-100 font-sans">
+
+    <nav class="bg-white shadow-md p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="{{ url_for('index') }}"
+                class="text-2xl font-black text-blue-700 tracking-tighter hover:opacity-80 transition">
+                <i class="fas fa-arrow-left text-sm mr-2"></i>ATENDE<span class="text-orange-500">50+</span>
+            </a>
+            <span class="text-slate-500 hidden md:block italic">Portal de Experiência</span>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto my-10 px-4">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-blue-700 p-8 text-white text-center">
+                <h1 class="text-3xl font-bold mb-2">Seja um Prof50+</h1>
+                <p class="opacity-80">Preencha seus dados abaixo para começar a oferecer seus serviços no Portal.</p>
+            </div>
+
+            <form action="{{ url_for('salvar_profissional') }}" method="POST">
+                <div class="p-6 md:p-10 space-y-8">
+
+                    <div class="border-b border-slate-200 pb-8">
+                        <h2 class="text-xl font-semibold text-slate-800 mb-6 flex items-center">
+                            <i class="fas fa-user-circle mr-2 text-blue-600"></i> Dados Pessoais
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-slate-700">Nome Completo</label>
+                                <input type="text" name="nome" required
+                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    placeholder="Ex: João da Silva">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Como prefere ser chamado
+                                    (Apelido)</label>
+                                <input type="text" name="apelido"
+                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    placeholder="Ex: Mestre João">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">CPF</label>
+                                <input type="text" name="cpf" required
+                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    placeholder="000.000.000-00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-b border-slate-200 pb-8 mt-8">
+                        <h2 class="text-xl font-semibold text-slate-800 mb-6 flex items-center">
+                            <i class="fas fa-briefcase mr-2 text-blue-600"></i> Experiência
+                        </h2>
+                        <div class="space-y-4">
+                            <label class="block text-sm font-medium text-slate-700">
+                                Selecione até 3 especialidades (Segure Ctrl para selecionar mais de uma):
+                            </label>
+                            <select name="experiencia" id="experiencia" multiple required
+                                class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition h-40">
+                                <option value="Manutenção Predial">Manutenção Predial</option>
+                                <option value="Manutenção Hidráulica">Manutenção Hidráulica</option>
+                                <option value="Manutenção Equipamentos de Informática">Manutenção Equipamentos de
+                                    Informática</option>
+                                <option value="Manutenção em Vidros/Vidraças">Manutenção em Vidros/Vidraças</option>
+                                <option value="Manutenção em Jardim">Manutenção em Jardim</option>
+                                <option value="Manutenção em Piscina">Manutenção em Piscina</option>
+                                <option value="Manutenção em Alvenaria">Manutenção em Alvenaria</option>
+                            </select>
+                            <p class="text-xs text-slate-400 italic">* Utilize o campo acima para destacar suas
+                                principais habilidades.</p>
+                        </div>
+                    </div>
+
+                    <div class="border-b border-slate-200 pb-8">
+                        <h2 class="text-xl font-semibold text-slate-800 mb-6 flex items-center">
+                            <i class="fas fa-phone-alt mr-2 text-blue-600"></i> Contato
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Telefone Fixo</label>
+                                <input type="tel" name="fone_fixo"
+                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    placeholder="(00) 0000-0000">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">WhatsApp (Celular)</label>
+                                <input type="tel" name="whatsapp" required
+                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    placeholder="(00) 90000-0000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-semibold text-slate-800 mb-6 flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i> Endereço Completo
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-slate-700">Rua/Logradouro e Número</label>
+                                <input type="text" name="endereco" required
+                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    placeholder="Rua das Flores, 123">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Bairro</label>
+                                <input type="text" name="bairro" required
+                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Cidade</label>
+                                <input type="text" name="cidade" required
+                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">Estado (UF)</label>
+                                <select name="uf"
+                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                                    <option value="GO">Goiás</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="DF">Distrito Federal</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700">CEP</label>
+                                <input type="text" name="cep" required
+                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    placeholder="00000-000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-10">
+                        <button type="submit"
+                            class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl text-lg shadow-lg transform transition hover:-translate-y-1 active:scale-95">
+                            <i class="fas fa-check-circle mr-2"></i> Concluir meu Cadastro
+                        </button>
+                        <p class="text-center text-slate-400 text-sm mt-4">
+                            Ao se cadastrar, você concorda com os termos de uso do Portal Atende50+.
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script>
+        // Script para limitar a seleção em no máximo 3 itens
+        const select = document.getElementById('experiencia');
+        select.onchange = function () {
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length > 3) {
+                alert("Por favor, selecione no máximo 3 áreas de experiência.");
+                // Desmarca a última opção selecionada
+                selectedOptions[selectedOptions.length - 1].selected = false;
+            }
+        };
+    </script>
+    <footer class="text-center pb-10 text-slate-500 text-sm">
+        &copy; 2026 Portal Atende50+ | Conectando Talentos
+    </footer>
+
+</body>
+
+</html>

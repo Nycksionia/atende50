@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Atende50+ | Experiência que Resolve</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .hero-gradient {
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)),
+                url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800">
+
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-3xl font-black text-blue-700 tracking-tighter">ATENDE<span
+                            class="text-orange-500">50+</span></span>
+                </div>
+
+                <div class="hidden md:flex space-x-6 items-center font-medium">
+                    <a href="#institucional" class="hover:text-blue-600 transition">Quem Somos</a>
+                    <a href="{{ url_for('ir_para_cadastro_prof') }}" class="hover:text-blue-600 transition">Seja um
+                        Prof50+</a>
+                    <a href="{{ url_for('ir_para_cadastro_cliente') }}" class="hover:text-blue-600 transition">Pedir
+                        Solução (Lead)</a>
+                    <a href="{{ url_for('ir_para_contato') }}" class="hover:text-blue-600 transition">Contato</a>
+
+                    <div class="h-6 w-px bg-slate-200 mx-2"></div>
+
+                    <a href="{{ url_for('exibir_login') }}"
+                        class="bg-blue-700 text-white px-5 py-2 rounded-full hover:bg-blue-800 transition">
+                        Área Restrita
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-gradient h-[70vh] flex items-center justify-center text-center text-white px-6">
+        <div class="max-w-4xl">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+                A Experiência não aposenta. <span class="text-orange-400">Ela resolve.</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-10 text-slate-200">
+                Conectamos o talento de profissionais com mais de 50 anos às necessidades reais de residências e
+                empresas.
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="{{ url_for('ir_para_cadastro_cliente') }}"
+                    class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg">Preciso
+                    de um Profissional</a>
+                <a href="{{ url_for('ir_para_cadastro_prof') }}"
+                    class="bg-white hover:bg-slate-100 text-blue-900 px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg">Quero
+                    Oferecer meus Serviços</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="institucional" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-slate-900 mb-4">Nossa Instituição</h2>
+                <div class="w-24 h-1 bg-orange-500 mx-auto"></div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="p-8 border-t-4 border-blue-600 shadow-xl rounded-xl bg-slate-50">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-2">🇧🇷</span>
+                        <h3 class="text-xl font-bold italic">Português</h3>
+                    </div>
+                    <p class="leading-relaxed text-slate-600">
+                        O <strong>Portal Atende50+</strong> nasceu com a missão de reinserir profissionais experientes
+                        no mercado. Atuamos como o elo entre o conhecimento técnico acumulado por décadas e o cliente
+                        que busca confiança, pontualidade e excelência em serviços residenciais e corporativos.
+                    </p>
+                </div>
+
+                <div class="p-8 border-t-4 border-red-600 shadow-xl rounded-xl bg-slate-50">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-2">🇺🇸</span>
+                        <h3 class="text-xl font-bold italic">English</h3>
+                    </div>
+                    <p class="leading-relaxed text-slate-600">
+                        The <strong>Atende50+ Portal</strong> was founded to reintroduce experienced professionals into
+                        the labor market. We serve as the bridge between decades of accumulated technical expertise and
+                        clients seeking trust, punctuality, and excellence in residential and corporate services.
+                    </p>
+                </div>
+
+                <div class="p-8 border-t-4 border-yellow-500 shadow-xl rounded-xl bg-slate-50">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-2">🇪🇸</span>
+                        <h3 class="text-xl font-bold italic">Español</h3>
+                    </div>
+                    <p class="leading-relaxed text-slate-600">
+                        El <strong>Portal Atende50+</strong> nació con la misión de reinsertar profesionales
+                        experimentados en el mercado. Actuamos como el vínculo entre el conocimiento técnico acumulado
+                        por décadas y el cliente que busca confianza, puntualidad y excelencia en servicios
+                        residenciales y corporativos.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h3 class="text-2xl font-light mb-8 italic">Liderado por quem acredita na experiência</h3>
+            <div class="flex justify-center gap-12 text-lg">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center font-bold">NC</div>
+                    <span>Nycksion Cavalcante</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center font-bold">HF
+                    </div>
+                    <span>Helen Ferreira</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white py-10 border-t">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:row justify-between items-center gap-6">
+            <div class="text-2xl font-black text-blue-700">ATENDE<span class="text-orange-500">50+</span></div>
+            <p class="text-slate-500">© 2026 Portal Atende50+ - Todos os direitos reservados.</p>
+            <div class="flex gap-4">
+                <a href="#" class="text-slate-400 hover:text-blue-600 text-xl"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="text-slate-400 hover:text-blue-600 text-xl"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

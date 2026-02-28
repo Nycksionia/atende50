@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Gestão Prof50+ | Atende50+</title>
+</head>
+
+<body class="bg-slate-50 flex h-screen">
+    <aside class="w-64 bg-slate-900 text-white flex flex-col">
+        <div class="p-6 border-b border-slate-800">
+            <a href="{{ url_for('exibir_area_restrita') }}" class="block hover:opacity-80 transition">
+                <span class="text-xl font-black tracking-tighter text-blue-400">GESTÃO <span
+                        class="text-orange-500">50+</span></span>
+            </a>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="{{ url_for('ir_para_dashboard') }}"
+                class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition">
+                <i class="fas fa-chart-pie w-5"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin_clientes') }}"
+                class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition">
+                <i class="fas fa-users w-5"></i> Clientes
+            </a>
+            <a href="{{ url_for('admin_profissionais') }}"
+                class="flex items-center gap-3 p-3 rounded-lg bg-blue-700 font-bold">
+                <i class="fas fa-user-tie w-5"></i> Prof50+
+            </a>
+            <a href="{{ url_for('listar_chamados') }}"
+                class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition">
+                <i class="fas fa-list-ul w-5"></i> Chamados
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-10 overflow-y-auto">
+        <h1 class="text-3xl font-bold text-slate-800 mb-8">Base de Profissionais 50+</h1>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-xs font-bold">
+                    <tr>
+                        <th class="p-5">Nome Completo</th>
+                        <th class="p-5">Apelido</th>
+                        <th class="p-5">WhatsApp</th>
+                        <th class="p-5">Cidade</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for prof in profissionais %}
+                    <tr class="hover:bg-blue-50 cursor-pointer transition"
+                        onclick="abrirModalProf('{{ prof.nome }}', '{{ prof.apelido }}', '{{ prof.whatsapp }}', '{{ prof.endereco }}', '{{ prof.experiencia }}')">
+                        <td class="p-5 font-medium text-slate-700">{{ prof.nome }}</td>
+                        <td class="p-5 text-slate-600">{{ prof.apelido }}</td>
+                        <td class="p-5 text-slate-600">{{ prof.whatsapp }}</td>
+                        <td class="p-5 text-slate-500">{{ prof.cidade }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="modalProf" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 p-4"
+        onclick="this.classList.add('hidden')">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Ficha do Profissional</h2>
+                <button onclick="document.getElementById('modalProf').classList.add('hidden')"
+                    class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase">Nome / Apelido</p>
+                    <p id="mNome" class="text-lg text-slate-700 font-semibold"></p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase">WhatsApp</p>
+                        <p id="mWhats" class="text-slate-700"></p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase">Endereço</p>
+                        <p id="mEnd" class="text-slate-700"></p>
+                    </div>
+                </div>
+                <div class="pt-4 border-t">
+                    <p class="text-xs font-bold text-slate-400 uppercase mb-2">Especialidades</p>
+                    <p id="mExp" class="text-blue-700 font-bold bg-blue-50 p-3 rounded-xl border border-blue-100"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirModalProf(nome, apelido, whats, end, exp) {
+            document.getElementById('mNome').innerText = nome + (apelido ? " (" + apelido + ")" : "");
+            document.getElementById('mWhats').innerText = whats;
+            document.getElementById('mEnd').innerText = end;
+            document.getElementById('mExp').innerText = exp || "Nenhuma informada";
+            document.getElementById('modalProf').classList.remove('hidden');
+            document.getElementById('modalProf').classList.add('flex');
+        }
+    </script>
+</body>
+
+</html>

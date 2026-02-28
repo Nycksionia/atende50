@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato | Atende50+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-50 font-sans">
+
+    <nav class="bg-white shadow-sm p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="{{ url_for('index') }}"
+                class="text-2xl font-black text-blue-700 tracking-tighter hover:opacity-80 transition">
+                <i class="fas fa-arrow-left text-sm mr-2"></i>ATENDE<span class="text-orange-500">50+</span>
+            </a>
+
+            <div class="space-x-4 hidden md:block">
+                <a href="{{ url_for('index') }}#institucional" class="text-slate-600 hover:text-blue-700">Sobre Nós</a>
+                <a href="{{ url_for('ir_para_cadastro_prof') }}"
+                    class="text-slate-600 hover:text-blue-700">Profissionais</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto my-12 px-4">
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-extrabold text-slate-900 mb-4">Fale com os Fundadores</h1>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">Estamos aqui para ouvir suas sugestões, tirar dúvidas ou
+                estabelecer parcerias. O Portal Atende50+ é feito de pessoas para pessoas.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-12 mb-16">
+            <div
+                class="bg-white rounded-3xl shadow-xl p-8 border-b-8 border-blue-700 transition transform hover:-translate-y-2">
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center mb-6 border-4 border-blue-50">
+                        <i class="fas fa-user-tie text-5xl text-blue-700"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">Nycksion Cavalcante</h2>
+                    <p class="text-blue-600 font-medium mb-4">Co-fundador & Desenvolvedor</p>
+                    <p class="text-slate-500 mb-6">Focado em criar tecnologia que conecta a sabedoria da experiência às
+                        necessidades do dia a dia.</p>
+                    <div class="flex gap-4">
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-blue-700 hover:bg-blue-700 hover:text-white transition"><i
+                                class="fab fa-linkedin-in"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-green-600 hover:bg-green-600 hover:text-white transition"><i
+                                class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="bg-white rounded-3xl shadow-xl p-8 border-b-8 border-orange-500 transition transform hover:-translate-y-2">
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="w-32 h-32 bg-orange-50 rounded-full flex items-center justify-center mb-6 border-4 border-orange-50">
+                        <i class="fas fa-user-astronaut text-5xl text-orange-500"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">Helen Ferreira</h2>
+                    <p class="text-orange-600 font-medium mb-4">Co-fundadora & Gestão</p>
+                    <p class="text-slate-500 mb-6">Dedicada à curadoria e ao suporte humano, garantindo que cada
+                        atendimento tenha a qualidade Atende50+.</p>
+                    <div class="flex gap-4">
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-blue-700 hover:bg-blue-700 hover:text-white transition"><i
+                                class="fab fa-linkedin-in"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-green-600 hover:bg-green-600 hover:text-white transition"><i
+                                class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-lg p-8 md:p-12 max-w-4xl mx-auto">
+            <h3 class="text-2xl font-bold text-slate-800 mb-8 text-center">Envie uma mensagem direta</h3>
+            <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2">Seu Nome</label>
+                    <input type="text"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition"
+                        placeholder="Ex: Maria Silva">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-600 mb-2">Seu E-mail ou WhatsApp</label>
+                    <input type="text"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition"
+                        placeholder="Para podermos responder">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-slate-600 mb-2">Mensagem</label>
+                    <textarea rows="4"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition"
+                        placeholder="Como podemos ajudar você hoje?"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                    <button type="submit"
+                        class="w-full bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-xl transition shadow-lg">
+                        Enviar Mensagem
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="text-center py-12 text-slate-400">
+        <p>Atende50+ | Transparência e Respeito</p>
+    </footer>
+
+</body>
+
+</html>
