@@ -196,18 +196,25 @@ def salvar_pedido():
         return redirect(url_for('index'))
 
 # --- INICIALIZAÇÃO DO BANCO ---
-# --- INICIALIZAÇÃO DO BANCO ---
 with app.app_context():
     try:
+        # Força a criação das tabelas se não existirem
         db.create_all()
-        # Verifica se o Admin existe usando o modelo correto definido lá em cima
-        if not Admin.query.filter_by(usuario='admin@atende50.com').first():
-            admin_padrao = Admin(usuario='admin@atende50.com', senha='123')
-            db.session.add(admin_padrao)
+        
+        # Verifica se o administrador padrão já existe para não duplicar
+        admin_existe = Admin.query.filter_by(usuario='admin@atende50.com').first()
+        
+        if not admin_existe:
+            novo_admin = Admin(usuario='admin@atende50.com', senha='123')
+            db.session.add(novo_admin)
             db.session.commit()
-            print(">>> Banco de dados inicializado e Admin criado!")
+            print(">>> Banco de dados e Admin criados com sucesso!")
+        else:
+            print(">>> Banco de dados já existe. Admin pronto.")
+            
     except Exception as e:
-        print(f">>> Erro ao inicializar banco: {e}")
+        print(f">>> ERRO CRÍTICO NA INICIALIZAÇÃO: {e}")
 
+# Garanta que exista apenas UM bloco de execução no final
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
