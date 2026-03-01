@@ -1,12 +1,16 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from datetime import datetime
 
 app = Flask(__name__)
-# Usando uma chave secreta única e segura
 app.config['SECRET_KEY'] = 'atende50_projeto_2026_seguro'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///atende50.db'
+
+# Ajuste para garantir que o SQLite funcione no Render
+# Ele tentará criar o banco na pasta 'instance' se ela existir, ou na raiz.
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'atende50.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -53,7 +57,6 @@ def index():
 
 @app.route('/login')
 def exibir_login():
-    # Inicializa o contador de tentativas se não existir
     if 'tentativas' not in session:
         session['tentativas'] = 0
     return render_template('login.html')
@@ -66,23 +69,21 @@ def processar_login():
     u = request.form.get('usuario')
     s = request.form.get('senha')
     
-    # Busca no modelo Admin (corrigido para não usar 'Usuario')
     admin = Admin.query.filter_by(usuario=u, senha=s).first()
     
     if admin:
         session['logado'] = True
         session['usuario_admin'] = u
-        session['tentativas'] = 0  # Reseta tentativas ao acertar
+        session['tentativas'] = 0
         return redirect(url_for('exibir_area_restrita'))
     else:
         session['tentativas'] += 1
-        # Lógica de bloqueio após 3 erros
         if session['tentativas'] >= 3:
-            session['tentativas'] = 0 # Reseta para futuras tentativas após expulsar
-            flash('Muitas tentativas falhas. Você foi redirecionado.')
+            session['tentativas'] = 0
+            flash('Muitas tentativas falhas. Retornando ao início.')
             return redirect(url_for('index'))
             
-        flash(f'Usuário ou senha incorretos. Tentativa {session["tentativas"]} de 3.')
+        flash(f'Credenciais inválidas. Tentativa {session["tentativas"]} de 3.')
         return redirect(url_for('exibir_login'))
 
 @app.route('/logout')
@@ -160,7 +161,7 @@ def salvar_profissional():
         return redirect(url_for('index'))
     except Exception as e:
         db.session.rollback()
-        flash('Erro ao salvar profissional. Verifique os dados.')
+        flash('Erro ao salvar profissional.')
         return redirect(url_for('index'))
 
 @app.route('/salvar-pedido', methods=['POST'])
@@ -198,23 +199,16 @@ def salvar_pedido():
 # --- INICIALIZAÇÃO DO BANCO ---
 with app.app_context():
     try:
-        # Força a criação das tabelas se não existirem
         db.create_all()
-        
-        # Verifica se o administrador padrão já existe para não duplicar
         admin_existe = Admin.query.filter_by(usuario='admin@atende50.com').first()
-        
         if not admin_existe:
             novo_admin = Admin(usuario='admin@atende50.com', senha='123')
             db.session.add(novo_admin)
             db.session.commit()
-            print(">>> Banco de dados e Admin criados com sucesso!")
-        else:
-            print(">>> Banco de dados já existe. Admin pronto.")
-            
     except Exception as e:
-        print(f">>> ERRO CRÍTICO NA INICIALIZAÇÃO: {e}")
+        pass
 
-# Garanta que exista apenas UM bloco de execução no final
+# AJUSTE PARA O RENDER: Definir host e porta dinâmicos
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
