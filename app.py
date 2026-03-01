@@ -210,6 +210,30 @@ def ir_para_cadastro_cliente():
 def ir_para_contato():
     return render_template('contato.html')
 
+@app.route('/debug-bd')
+def debug_bd():
+    if not session.get('logado'):
+        return "Acesso negado. Faça login primeiro."
+    
+    # Busca dados de todas as tabelas
+    profs = Profissional.query.all()
+    clientes = ClienteLead.query.all()
+    chamados = Chamado.query.all()
+    
+    # Cria uma visualização rápida em texto
+    resumo = "<h1>Inspeção de Dados</h1>"
+    
+    resumo += "<h2>Profissionais</h2>"
+    resumo += "<br>".join([f"ID: {p.id} | Nome: {p.nome} | CPF: {p.cpf}" for p in profs]) or "Nenhum"
+    
+    resumo += "<h2>Clientes (Leads)</h2>"
+    resumo += "<br>".join([f"ID: {c.id} | Nome: {c.nome} | Problema: {c.problema}" for c in clientes]) or "Nenhum"
+    
+    resumo += "<h2>Chamados</h2>"
+    resumo += "<br>".join([f"ID: {ch.id} | Status: {ch.status} | Cliente ID: {ch.cliente_id}" for ch in chamados]) or "Nenhum"
+    
+    return resumo
+
 # --- INICIALIZAÇÃO DO BANCO ---
 with app.app_context():
     try:
