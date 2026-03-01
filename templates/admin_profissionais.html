@@ -9,69 +9,95 @@
     <title>Gestão Prof50+ | Atende50+</title>
 </head>
 
-<body class="bg-slate-50 flex h-screen">
-    <aside class="w-64 bg-slate-900 text-white flex flex-col h-screen sticky top-0">
-        <div class="p-6 border-b border-slate-800">
+<body class="bg-slate-50 flex h-screen overflow-hidden">
+    <aside id="sidebar" class="hidden lg:flex w-64 bg-slate-900 text-white flex-col shrink-0 h-full sticky top-0 z-50">
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center">
             <a href="{{ url_for('exibir_area_restrita') }}" class="block hover:opacity-80 transition">
                 <span class="text-xl font-black tracking-tighter text-blue-400">GESTÃO <span
                         class="text-orange-500">50+</span></span>
             </a>
+            <button onclick="toggleSidebar()" class="lg:hidden text-slate-400">
+                <i class="fas fa-times text-xl"></i>
+            </button>
         </div>
 
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
             <a href="{{ url_for('ir_para_dashboard') }}"
-                class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition">
-                <i class="fas fa-chart-pie w-5"></i> Dashboard
+                class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
+                <i class="fas fa-chart-pie w-5 text-blue-400"></i> Dashboard
             </a>
             <a href="{{ url_for('admin_clientes') }}"
-                class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition">
-                <i class="fas fa-users w-5"></i> Clientes
+                class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
+                <i class="fas fa-users w-5 text-blue-400"></i> Clientes
             </a>
             <a href="{{ url_for('admin_profissionais') }}"
-                class="flex items-center gap-3 p-3 rounded-lg bg-blue-700 font-bold">
-                <i class="fas fa-user-tie w-5"></i> Prof50+
+                class="flex items-center gap-3 p-3 rounded-xl bg-blue-700 font-bold text-white">
+                <i class="fas fa-user-tie w-5 text-white"></i> Prof50+
             </a>
             <a href="{{ url_for('listar_chamados') }}"
-                class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition">
-                <i class="fas fa-list-ul w-5"></i> Chamados
+                class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
+                <i class="fas fa-list-ul w-5 text-blue-400"></i> Chamados
             </a>
         </nav>
 
         <div class="p-4 border-t border-slate-800 mt-auto">
-            <a href="{{ url_for('logout') }}"
-                class="flex items-center gap-3 p-3 rounded-lg text-slate-400 hover:text-white hover:bg-red-900/20 transition">
-                <i class="fas fa-sign-out-alt w-5"></i> Sair do Painel
+            <a href="{{ url_for('index') }}"
+                class="text-slate-400 text-sm hover:text-white flex items-center gap-2 px-3 py-2">
+                <i class="fas fa-sign-out-alt"></i> Sair do Painel
             </a>
         </div>
     </aside>
 
-    <main class="flex-1 p-10 overflow-y-auto">
-        <h1 class="text-3xl font-bold text-slate-800 mb-8">Base de Profissionais 50+</h1>
+    <main class="flex-1 flex flex-col min-w-0 bg-slate-50 overflow-hidden">
+        <header
+            class="bg-white border-b border-slate-200 py-4 px-6 md:px-10 flex justify-between lg:justify-end items-center shadow-sm shrink-0">
+            <div class="lg:hidden text-slate-800 font-bold">Profissionais</div>
+            <div class="flex items-center space-x-4">
+                <span class="text-slate-500 italic text-sm hidden sm:inline">Painel Administrativo</span>
+                <div class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+            </div>
+        </header>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-xs font-bold">
-                    <tr>
-                        <th class="p-5">Nome Completo</th>
-                        <th class="p-5">Apelido</th>
-                        <th class="p-5">WhatsApp</th>
-                        <th class="p-5">Cidade</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    {% for prof in profissionais %}
-                    <tr class="hover:bg-blue-50 cursor-pointer transition"
-                        onclick="abrirModalProf('{{ prof.nome }}', '{{ prof.apelido }}', '{{ prof.whatsapp }}', '{{ prof.endereco }}', '{{ prof.experiencia }}')">
-                        <td class="p-5 font-medium text-slate-700">{{ prof.nome }}</td>
-                        <td class="p-5 text-slate-600">{{ prof.apelido }}</td>
-                        <td class="p-5 text-slate-600">{{ prof.whatsapp }}</td>
-                        <td class="p-5 text-slate-500">{{ prof.cidade }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="p-4 md:p-10 overflow-y-auto h-full">
+            <div class="mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Base de Profissionais 50+</h1>
+                <p class="text-slate-500">Gerencie os especialistas cadastrados no portal.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-auto">
+                <div class="min-w-[1000px]">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-xs font-bold">
+                            <tr>
+                                <th class="p-5">Nome Completo</th>
+                                <th class="p-5">Apelido</th>
+                                <th class="p-5">WhatsApp</th>
+                                <th class="p-5">Cidade</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            {% for prof in profissionais %}
+                            <tr class="hover:bg-blue-50 cursor-pointer transition"
+                                onclick="abrirModalProf('{{ prof.nome }}', '{{ prof.apelido }}', '{{ prof.whatsapp }}', '{{ prof.endereco }}', '{{ prof.experiencia }}')">
+                                <td class="p-5 font-medium text-slate-700">{{ prof.nome }}</td>
+                                <td class="p-5 text-slate-600">{{ prof.apelido }}</td>
+                                <td class="p-5 text-slate-600">{{ prof.whatsapp }}</td>
+                                <td class="p-5 text-slate-500">{{ prof.cidade }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </main>
+
+    <button onclick="toggleSidebar()"
+        class="lg:hidden fixed bottom-6 right-6 z-[60] bg-blue-700 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center">
+        <i class="fas fa-bars text-xl"></i>
+    </button>
 
     <div id="modalProf" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 p-4"
         onclick="this.classList.add('hidden')">
@@ -107,6 +133,14 @@
     </div>
 
     <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('fixed');
+            sidebar.classList.toggle('inset-0');
+            sidebar.classList.toggle('flex');
+        }
+
         function abrirModalProf(nome, apelido, whats, end, exp) {
             document.getElementById('mNome').innerText = nome + (apelido ? " (" + apelido + ")" : "");
             document.getElementById('mWhats').innerText = whats;

@@ -9,82 +9,112 @@
     <title>Gestão de Clientes | Atende50+</title>
 </head>
 
-<body class="bg-slate-50 flex h-screen">
+<body class="bg-slate-50 flex h-screen overflow-hidden">
 
-    <aside class="w-64 bg-slate-900 text-white flex flex-col h-screen sticky top-0">
-        <div class="p-6 border-b border-slate-800">
+    <aside id="sidebar" class="hidden lg:flex w-64 bg-slate-900 text-white flex-col shrink-0 h-full sticky top-0 z-50">
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center">
             <a href="{{ url_for('exibir_area_restrita') }}" class="block hover:opacity-80 transition">
                 <span class="text-xl font-black tracking-tighter text-blue-400">GESTÃO <span
                         class="text-orange-500">50+</span></span>
             </a>
+            <button onclick="toggleSidebar()" class="lg:hidden text-slate-400">
+                <i class="fas fa-times text-xl"></i>
+            </button>
         </div>
 
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
             <a href="{{ url_for('ir_para_dashboard') }}"
-                class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition">
-                <i class="fas fa-chart-pie w-5"></i> Dashboard
+                class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
+                <i class="fas fa-chart-pie w-5 text-blue-400"></i> Dashboard
             </a>
             <a href="{{ url_for('admin_clientes') }}"
-                class="flex items-center gap-3 p-3 rounded-lg bg-blue-700 font-bold">
-                <i class="fas fa-users w-5"></i> Clientes
+                class="flex items-center gap-3 p-3 rounded-xl bg-blue-700 font-bold text-white">
+                <i class="fas fa-users w-5 text-white"></i> Clientes
             </a>
             <a href="{{ url_for('admin_profissionais') }}"
-                class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition">
-                <i class="fas fa-user-tie w-5"></i> Prof50+
+                class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
+                <i class="fas fa-user-tie w-5 text-blue-400"></i> Prof50+
             </a>
             <a href="{{ url_for('listar_chamados') }}"
-                class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition">
-                <i class="fas fa-list-ul w-5"></i> Chamados
+                class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
+                <i class="fas fa-list-ul w-5 text-blue-400"></i> Chamados
             </a>
         </nav>
 
         <div class="p-4 border-t border-slate-800 mt-auto">
-            <a href="{{ url_for('logout') }}"
-                class="flex items-center gap-3 p-3 rounded-lg text-slate-400 hover:text-white hover:bg-red-900/20 transition">
-                <i class="fas fa-sign-out-alt w-5"></i> Sair do Painel
+            <a href="{{ url_for('index') }}"
+                class="text-slate-400 text-sm hover:text-white flex items-center gap-2 px-3 py-2 transition">
+                <i class="fas fa-sign-out-alt"></i> Sair do Painel
             </a>
         </div>
     </aside>
 
-    <main class="flex-1 p-10 overflow-y-auto">
-        <h1 class="text-3xl font-bold text-slate-800 mb-8">Base de Clientes</h1>
+    <main class="flex-1 flex flex-col min-w-0 bg-slate-50 overflow-hidden">
+        <header
+            class="bg-white border-b border-slate-200 py-4 px-6 md:px-10 flex justify-between lg:justify-end items-center shadow-sm shrink-0">
+            <div class="lg:hidden text-slate-800 font-bold text-lg">Clientes</div>
+            <div class="flex items-center space-x-4">
+                <span class="text-slate-500 italic text-sm hidden sm:inline">Base de Leads</span>
+                <div class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </header>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-xs font-bold">
-                    <tr>
-                        <th class="p-5">Nome Completo</th>
-                        <th class="p-5">WhatsApp</th>
-                        <th class="p-5">Localização</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-slate-200">
-                    {% for cliente in clientes %}
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ cliente.nome }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ cliente.whatsapp }}</td>
-                        <td class="px-6 py-4 text-sm text-slate-600">{{ cliente.problema }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                Pendente
-                            </span>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-slate-500">Nenhum cliente encontrado no banco
-                            de dados.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="p-4 md:p-10 overflow-y-auto h-full">
+            <div class="mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Clientes Cadastrados</h1>
+                <p class="text-slate-500">Acompanhe as novas solicitações de serviços.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-auto">
+                <div class="min-w-[1000px]">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-xs font-bold">
+                            <tr>
+                                <th class="p-5">Nome Completo</th>
+                                <th class="p-5">WhatsApp</th>
+                                <th class="p-5">Descrição do Problema</th>
+                                <th class="p-5 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+                            {% for cliente in clientes %}
+                            <tr class="hover:bg-blue-50 cursor-pointer transition"
+                                onclick="abrirModal('{{ cliente.nome }}', '{{ cliente.whatsapp }}', '{{ cliente.endereco }}', '{{ cliente.cpf }}')">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-700">{{
+                                    cliente.nome }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ cliente.whatsapp }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-slate-600">{{ cliente.problema[:60] }}...</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <span
+                                        class="px-3 py-1 text-[10px] font-black rounded-full bg-yellow-100 text-yellow-700 uppercase">
+                                        Pendente
+                                    </span>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-slate-500">Nenhum cliente encontrado.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </main>
 
-    <div id="modalVisualizacao" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50"
+    <button onclick="toggleSidebar()"
+        class="lg:hidden fixed bottom-6 right-6 z-[60] bg-blue-700 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center">
+        <i class="fas fa-bars text-xl"></i>
+    </button>
+
+    <div id="modalVisualizacao" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 px-4"
         onclick="fecharModal()">
-        <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl mx-4" onclick="event.stopPropagation()">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-slate-800">Detalhes do Cliente</h2>
                 <button onclick="fecharModal()" class="text-slate-400 hover:text-slate-600"><i
@@ -93,30 +123,45 @@
             <div class="space-y-4">
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase">Nome</p>
-                    <p id="mNome" class="text-lg text-slate-700"></p>
+                    <p id="mNome" class="text-lg text-slate-700 font-semibold"></p>
                 </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase">WhatsApp</p>
-                    <p id="mWhats" class="text-slate-700"></p>
-                </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase">CPF</p>
-                    <p id="mCpf" class="text-slate-700"></p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase">WhatsApp</p>
+                        <p id="mWhats" class="text-slate-700"></p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase">CPF</p>
+                        <p id="mCpf" class="text-slate-700"></p>
+                    </div>
                 </div>
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase">Endereço</p>
-                    <p id="mEnd" class="text-slate-700"></p>
+                    <p id="mEnd" class="text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100"></p>
                 </div>
+            </div>
+            <div class="mt-8 flex justify-end">
+                <button onclick="fecharModal()"
+                    class="px-6 py-2 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-700 transition">
+                    Fechar
+                </button>
             </div>
         </div>
     </div>
 
     <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('fixed');
+            sidebar.classList.toggle('inset-0');
+            sidebar.classList.toggle('flex');
+        }
         function abrirModal(nome, whats, end, cpf) {
             document.getElementById('mNome').innerText = nome;
             document.getElementById('mWhats').innerText = whats;
-            document.getElementById('mEnd').innerText = end;
-            document.getElementById('mCpf').innerText = cpf;
+            document.getElementById('mEnd').innerText = end || "Não informado";
+            document.getElementById('mCpf').innerText = cpf || "Não informado";
             document.getElementById('modalVisualizacao').classList.remove('hidden');
             document.getElementById('modalVisualizacao').classList.add('flex');
         }
