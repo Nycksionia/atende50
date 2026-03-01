@@ -27,11 +27,10 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center h-20">
 
-                <div id="logo-button"
+                <div onclick="window.location.href='{{ url_for('index') }}'"
                     class="flex-shrink-0 flex items-center cursor-pointer hover:opacity-80 transition-opacity">
                     <span class="text-2xl md:text-3xl font-black text-blue-700 tracking-tighter">
                         ATENDE<span class="text-orange-500">50+</span>
-                        <i class="fas fa-chevron-down text-sm ml-2 text-slate-400 lg:hidden"></i>
                     </span>
                 </div>
 
@@ -44,15 +43,18 @@
                     <a href="{{ url_for('ir_para_contato') }}" class="hover:text-blue-600 transition">Contato</a>
                     <div class="h-6 w-px bg-slate-200 mx-2"></div>
                     <a href="{{ url_for('exibir_login') }}"
-                        class="bg-blue-700 text-white px-5 py-2 rounded-full hover:bg-blue-800 transition">
+                        class="bg-blue-700 text-white px-5 py-2 rounded-full hover:bg-blue-800 transition font-bold">
                         Área Restrita
                     </a>
                 </div>
 
-                <div class="lg:hidden flex items-center">
-                    <a href="{{ url_for('exibir_login') }}" class="text-blue-700 text-xl p-2">
+                <div class="lg:hidden flex items-center gap-4">
+                    <a href="{{ url_for('exibir_login') }}" class="text-blue-700 text-xl">
                         <i class="fas fa-lock"></i>
                     </a>
+                    <button id="mobile-menu-button" class="text-slate-600 text-2xl focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -60,8 +62,8 @@
         <div id="mobile-menu" class="hidden lg:hidden bg-slate-50 border-t border-slate-100 shadow-inner">
             <div class="px-4 pt-2 pb-6 space-y-2">
                 <a href="#institucional"
-                    class="block px-3 py-3 rounded-lg text-base font-semibold text-slate-700 hover:bg-blue-50"
-                    onclick="toggleMenu()">Quem Somos</a>
+                    class="block px-3 py-3 rounded-lg text-base font-semibold text-slate-700 hover:bg-blue-50">Quem
+                    Somos</a>
                 <a href="{{ url_for('ir_para_cadastro_prof') }}"
                     class="block px-3 py-3 rounded-lg text-base font-semibold text-slate-700 hover:bg-blue-50">Seja um
                     Prof50+</a>
@@ -78,21 +80,6 @@
             </div>
         </div>
     </nav>
-
-    <script>
-        const btn = document.getElementById('mobile-menu-button');
-        const menu = document.getElementById('mobile-menu');
-
-        function toggleMenu() {
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-            } else {
-                menu.classList.add('hidden');
-            }
-        }
-
-        btn.addEventListener('click', toggleMenu);
-    </script>
 
     <header class="hero-gradient min-h-[70vh] flex items-center justify-center text-center text-white px-6 py-20">
         <div class="max-w-4xl">
@@ -124,37 +111,23 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="p-8 border-t-4 border-blue-600 shadow-xl rounded-xl bg-slate-50">
-                    <div class="flex items-center mb-4">
-                        <span class="text-2xl mr-2">🇧🇷</span>
-                        <h3 class="text-xl font-bold italic">Português</h3>
-                    </div>
-                    <p class="leading-relaxed text-slate-600">
-                        O <strong>Portal Atende50+</strong> nasceu com a missão de reinserir profissionais experientes
-                        no mercado. Atuamos como o elo entre o conhecimento técnico e o cliente que busca confiança.
-                    </p>
+                <div class="p-8 border-t-4 border-blue-600 shadow-xl rounded-xl bg-slate-50 text-center">
+                    <span class="text-4xl mb-4 block">🇧🇷</span>
+                    <h3 class="text-xl font-bold italic mb-4">Português</h3>
+                    <p class="text-slate-600 text-sm">O Portal Atende50+ nasceu com a missão de reinserir profissionais
+                        experientes no mercado.</p>
                 </div>
-
-                <div class="p-8 border-t-4 border-red-600 shadow-xl rounded-xl bg-slate-50">
-                    <div class="flex items-center mb-4">
-                        <span class="text-2xl mr-2">🇺🇸</span>
-                        <h3 class="text-xl font-bold italic">English</h3>
-                    </div>
-                    <p class="leading-relaxed text-slate-600">
-                        The <strong>Atende50+ Portal</strong> was founded to reintroduce experienced professionals into
-                        the labor market. We serve as the bridge between expertise and trust.
-                    </p>
+                <div class="p-8 border-t-4 border-red-600 shadow-xl rounded-xl bg-slate-50 text-center">
+                    <span class="text-4xl mb-4 block">🇺🇸</span>
+                    <h3 class="text-xl font-bold italic mb-4">English</h3>
+                    <p class="text-slate-600 text-sm">The Atende50+ Portal was founded to reintroduce experienced
+                        professionals into the labor market.</p>
                 </div>
-
-                <div class="p-8 border-t-4 border-yellow-500 shadow-xl rounded-xl bg-slate-50">
-                    <div class="flex items-center mb-4">
-                        <span class="text-2xl mr-2">🇪🇸</span>
-                        <h3 class="text-xl font-bold italic">Español</h3>
-                    </div>
-                    <p class="leading-relaxed text-slate-600">
-                        El <strong>Portal Atende50+</strong> nació con la misión de reinsertar profesionales
-                        experimentados. Actuamos como el vínculo entre el conocimiento técnico y la confianza.
-                    </p>
+                <div class="p-8 border-t-4 border-yellow-500 shadow-xl rounded-xl bg-slate-50 text-center">
+                    <span class="text-4xl mb-4 block">🇪🇸</span>
+                    <h3 class="text-xl font-bold italic mb-4">Español</h3>
+                    <p class="text-slate-600 text-sm">El Portal Atende50+ nació con la misión de reinsertar
+                        profesionales experimentados.</p>
                 </div>
             </div>
         </div>
@@ -181,7 +154,7 @@
         <div
             class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
             <div class="text-2xl font-black text-blue-700">ATENDE<span class="text-orange-500">50+</span></div>
-            <p class="text-slate-500 text-sm">© 2026 Portal Atende50+ - Todos os direitos reservados.</p>
+            <p class="text-slate-500 text-sm">© 2026 Portal Atende50+ - Anápolis/Cuiabá.</p>
             <div class="flex gap-4">
                 <a href="#" class="text-slate-400 hover:text-blue-600 text-xl"><i class="fab fa-whatsapp"></i></a>
                 <a href="#" class="text-slate-400 hover:text-blue-600 text-xl"><i class="fab fa-linkedin"></i></a>
@@ -190,18 +163,14 @@
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const logoBtn = document.getElementById('logo-button');
-            const menu = document.getElementById('mobile-menu');
+        // Script simplificado para o menu mobile
+        const mobileBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-            if (logoBtn && menu) {
-                logoBtn.addEventListener('click', function () {
-                    menu.classList.toggle('hidden');
-                });
-            }
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
         });
     </script>
-
 </body>
 
 </html>

@@ -196,6 +196,20 @@ def salvar_pedido():
         flash('Erro ao processar pedido.')
         return redirect(url_for('index'))
 
+# --- NOVAS ROTAS PARA CORRIGIR O ERRO 500 ---
+
+@app.route('/cadastro-profissional')
+def ir_para_cadastro_prof():
+    return render_template('cadastro_prof.html')
+
+@app.route('/solicitar-servico')
+def ir_para_cadastro_cliente():
+    return render_template('cadastro_cliente.html')
+
+@app.route('/contato')
+def ir_para_contato():
+    return render_template('contato.html')
+
 # --- INICIALIZAÇÃO DO BANCO ---
 with app.app_context():
     try:
