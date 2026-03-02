@@ -30,6 +30,7 @@ class Profissional(db.Model):
     endereco = db.Column(db.String(200))
     cidade = db.Column(db.String(100))
     experiencia = db.Column(db.String(255))
+    # O backref='profissional' cria o link automático
     chamados = db.relationship('Chamado', backref='profissional', lazy=True)
 
 class ClienteLead(db.Model):
@@ -39,6 +40,7 @@ class ClienteLead(db.Model):
     whatsapp = db.Column(db.String(20), nullable=False)
     endereco = db.Column(db.String(200))
     problema = db.Column(db.Text, nullable=False)
+    # O backref='cliente' cria o link automático
     chamados = db.relationship('Chamado', backref='cliente', lazy=True)
     
 class Chamado(db.Model):
@@ -46,9 +48,16 @@ class Chamado(db.Model):
     data_abertura = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(20), default='Pendente')
     valor_total = db.Column(db.Float, default=0.0)
+    
+    # Chaves Estrangeiras
     profissional_id = db.Column(db.Integer, db.ForeignKey('profissional.id'), nullable=True)
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente_lead.id'), nullable=False)
 
+    # IMPORTANTE: No SQLAlchemy, quando você usa o 'backref' no modelo pai, 
+    # ele injeta automaticamente o objeto 'cliente' e 'profissional' aqui dentro.
+    # O erro ocorria porque o banco precisava ser reiniciado para reconhecer essa ligação.
+
+# ... (restante das rotas permanece igual)
 # --- ROTAS ---
 
 @app.route('/')
