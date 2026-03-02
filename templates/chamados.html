@@ -257,7 +257,6 @@
             const profWhats = select.options[select.selectedIndex].getAttribute('data-whats');
 
             try {
-                // 1. Faz o vínculo via Fetch para o Python sem recarregar a página
                 const response = await fetch(`/vincular_chamado/${chamadoId}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -265,34 +264,41 @@
                 });
 
                 if (response.ok) {
-                    // 2. MONTA AS MENSAGENS EXATAMENTE COMO VOCÊ PEDIU
+                    // Montagem das mensagens
                     const msgCliente = `O *${profNome}* irá solucionar o problema relatado no momento do cadastro. Aguarde alguns instantes que o Prof50+ entrará em contato para agendarem o horário.`;
-
                     const msgProf = `O Sr(a) *${clienteNome}* está esperando um contato seu para agendarem um horário para que você solucione o problema relatado por ele: *${clienteProblema}*.\n\nNúmero do WhatsApp do cliente: ${clienteWhats}`;
 
                     const limparNum = (n) => n.replace(/\D/g, '');
 
+                    // URLs para o disparo invisível
                     const urlCliente = `https://api.whatsapp.com/send?phone=55${limparNum(clienteWhats)}&text=${encodeURIComponent(msgCliente)}`;
                     const urlProf = `https://api.whatsapp.com/send?phone=55${limparNum(profWhats)}&text=${encodeURIComponent(msgProf)}`;
 
-                    // 3. DISPARO AUTOMÁTICO DAS JANELAS
-                    alert(`✅ Profissional ${profNome} vinculado! Abrindo comunicações...`);
+                    // --- A MÁGICA DO ENVIO SEM ABRIR ABAS ---
+                    const enviarInvisivel = (url) => {
+                        const ifr = document.createElement('iframe');
+                        ifr.style.display = 'none'; // Esconde o iframe
+                        ifr.src = url;
+                        document.body.appendChild(ifr);
+                        setTimeout(() => document.body.removeChild(ifr), 3000); // Remove após processar
+                    };
 
-                    window.open(urlCliente, '_blank');
-
+                    // Dispara os dois sem abrir guias novas
+                    enviarInvisivel(urlCliente);
                     setTimeout(() => {
-                        window.open(urlProf, '_blank');
-                        window.location.reload(); // Recarrega para atualizar a tabela
-                    }, 1200);
+                        enviarInvisivel(urlProf);
+                        alert("✅ Vínculo realizado e mensagens enviadas para a fila do WhatsApp!");
+                        window.location.reload();
+                    }, 1000);
 
                 } else {
-                    alert("❌ Erro ao salvar vínculo no servidor.");
+                    alert("❌ Erro ao salvar vínculo.");
                 }
             } catch (error) {
                 console.error("Erro:", error);
-                alert("❌ Falha na conexão com o servidor.");
             }
         }
+        
     </script>
 </body>
 
