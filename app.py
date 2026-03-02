@@ -140,10 +140,20 @@ def admin_profissionais():
 def listar_chamados():
     if not session.get('logado'):
         return redirect(url_for('exibir_login'))
-    todos_chamados = Chamado.query.order_by(Chamado.data_abertura.desc()).all()
-    todos_profs = Profissional.query.all() 
-    return render_template('chamados.html', chamados=todos_chamados, profissionais=todos_profs)
-
+    
+    try:
+        # Busca chamados ordenados por data
+        todos_chamados = Chamado.query.order_by(Chamado.data_abertura.desc()).all()
+        # Busca todos os profissionais para o formulário de vínculo
+        todos_profs = Profissional.query.all() 
+        
+        return render_template('chamados.html', 
+                               chamados=todos_chamados, 
+                               profissionais=todos_profs)
+    except Exception as e:
+        print(f"Erro ao listar chamados: {e}")
+        return f"Erro interno: {e}", 500
+    
 # --- ROTAS DE SALVAMENTO ---
 
 @app.route('/salvar-profissional', methods=['POST'])
