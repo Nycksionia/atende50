@@ -167,18 +167,15 @@ def vincular_chamado(chamado_id):
     chamado = Chamado.query.get(chamado_id)
     
     if chamado and id_prof:
-        profissional = Profissional.query.get(id_prof)
-        if profissional:
-            # 1. Atualiza o banco de dados
-            chamado.profissional_id = id_prof
-            chamado.status = 'Em Andamento'
-            db.session.commit()
-            
-            # 2. Responde com sucesso (Sem redirecionar)
-            # Isso permite que o JavaScript no seu navegador execute o window.open
-            return "Vínculo realizado com sucesso", 200
+        # Atualiza o banco de dados
+        chamado.profissional_id = id_prof
+        chamado.status = 'Em Andamento'
+        db.session.commit()
+        
+        # Responde com sucesso para o JavaScript assumir o controle
+        return "Sucesso", 200
     
-    return "Erro ao processar vínculo", 400
+    return "Erro", 400
 
 # Rota para atualizar apenas o status (Pendente, Concluído, etc)
 @app.route('/atualizar_status_chamado/<int:chamado_id>', methods=['POST'])
