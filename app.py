@@ -161,7 +161,7 @@ def listar_chamados():
 @app.route('/vincular_chamado/<int:chamado_id>', methods=['POST'])
 def vincular_chamado(chamado_id):
     if not session.get('logado'):
-        return redirect(url_for('exibir_login'))
+        return "Não autorizado", 401
         
     id_prof = request.form.get('profissional_selecionado')
     chamado = Chamado.query.get(chamado_id)
@@ -169,33 +169,16 @@ def vincular_chamado(chamado_id):
     if chamado and id_prof:
         profissional = Profissional.query.get(id_prof)
         if profissional:
+            # 1. Atualiza o banco de dados
             chamado.profissional_id = id_prof
             chamado.status = 'Em Andamento'
             db.session.commit()
             
-            # Montando as mensagens exatamente como você solicitou
-            msg_cliente = (
-                f"O *{profissional.nome}* irá solucionar o problema relatado no momento do cadastro. "
-                f"Aguarde alguns instantes que o Prof50+ entrará em contato para agendarem o horário."
-            )
-            
-            msg_prof = (
-                f"O Sr(a) *{chamado.cliente.nome}* está esperando um contato seu para agendarem um horário "
-                f"para que você solucione o problema relatado por ele: *{chamado.cliente.problema}*. "
-                f"\n\nNúmero do WhatsApp do cliente: *{chamado.cliente.whatsapp}*"
-            )
-
-            # Prepara o pacote de dados para o JavaScript no chamados.html
-            session['disparar_zap'] = {
-                'whats_cliente': chamado.cliente.whatsapp,
-                'msg_cliente': msg_cliente,
-                'whats_prof': profissional.whatsapp,
-                'msg_prof': msg_prof
-            }
-            
-            flash('Vínculo realizado com sucesso!')
+            # 2. Responde com sucesso (Sem redirecionar)
+            # Isso permite que o JavaScript no seu navegador execute o window.open
+            return "Vínculo realizado com sucesso", 200
     
-    return redirect(url_for('listar_chamados'))
+    return "Erro ao processar vínculo", 400
 
 # Rota para atualizar apenas o status (Pendente, Concluído, etc)
 @app.route('/atualizar_status_chamado/<int:chamado_id>', methods=['POST'])

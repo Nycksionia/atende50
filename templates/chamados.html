@@ -101,8 +101,8 @@
                                 <td class="px-6 py-4">
                                     {% if chamado.cliente %}
                                     <div class="font-bold text-slate-800">{{ chamado.cliente.nome }}</div>
-                                    <div class="text-[11px] text-slate-400">Problema: {{ chamado.cliente.problema[:30]
-                                        }}...</div>
+                                    <div class="text-[11px] text-slate-400 italic">Problema: {{
+                                        chamado.cliente.problema[:30] }}...</div>
                                     {% else %}
                                     <span class="text-red-500 text-xs italic">Erro: Dados do cliente ausentes</span>
                                     {% endif %}
@@ -113,27 +113,27 @@
                                     <div class="flex items-center gap-2">
                                         <div
                                             class="w-8 h-8 bg-blue-700 rounded-full flex items-center justify-center text-white text-[10px] font-bold">
-                                            {{ chamado.profissional.nome[:2].upper() if chamado.profissional.nome else
-                                            '??' }}
+                                            {{ chamado.profissional.nome[:2].upper() }}
                                         </div>
                                         <span class="text-sm font-medium text-slate-700">{{ chamado.profissional.nome
                                             }}</span>
                                     </div>
                                     {% else %}
-                                    <form action="{{ url_for('vincular_chamado', chamado_id=chamado.id) }}"
-                                        method="POST" class="flex items-center gap-2">
-                                        <select name="profissional_selecionado" required
+                                    <div class="flex items-center gap-2">
+                                        <select id="select-prof-{{ chamado.id }}" required
                                             class="text-xs border border-slate-300 rounded-lg px-2 py-1 outline-none">
                                             <option value="">Vincular Prof50+...</option>
                                             {% for prof in profissionais %}
-                                            <option value="{{ prof.id }}">{{ prof.nome }}</option>
+                                            <option value="{{ prof.id }}" data-nome="{{ prof.nome }}"
+                                                data-whats="{{ prof.whatsapp }}">{{ prof.nome }}</option>
                                             {% endfor %}
                                         </select>
-                                        <button type="submit"
-                                            class="bg-blue-600 text-white p-1.5 rounded-lg hover:bg-blue-700">
+                                        <button type="button"
+                                            onclick="vincularEEnviarZap('{{ chamado.id }}', '{{ chamado.cliente.nome }}', '{{ chamado.cliente.whatsapp }}', '{{ chamado.cliente.problema|striptags|replace(range(39,40)|list|first|string, '') }}')"
+                                            class="bg-blue-600 text-white p-1.5 rounded-lg hover:bg-blue-700 transition">
                                             <i class="fas fa-link text-[10px]"></i>
                                         </button>
-                                    </form>
+                                    </div>
                                     {% endif %}
                                 </td>
 
@@ -243,33 +243,56 @@
             modal.classList.remove('flex');
         }
 
-        // --- AUTOMAÇÃO DE WHATSAPP (ESTILO MELHORIA CONTÍNUA) ---
-        document.addEventListener('DOMContentLoaded', function () {
-            {% if session.get('disparar_zap') %}
-            // Captura os dados e limpa a sessão para não repetir o disparo
-            const dadosZap = {{ session.pop('disparar_zap') | tojson | safe
-        }};
+        // --- FUNÇÃO DE VÍNCULO E DISPARO WHATSAPP (ESTILO MELHORIA CONTÍNUA) ---
+        async function vincularEEnviarZap(chamadoId, clienteNome, clienteWhats, clienteProblema) {
+            const select = document.getElementById(`select-prof-${chamadoId}`);
+            const profId = select.value;
 
-        const limparNum = (n) => n.replace(/\D/g, '');
-
-        // Montagem das URLs usando as mensagens prontas do seu app.py
-        const linkCliente = `https://api.whatsapp.com/send?phone=55${limparNum(dadosZap.whats_cliente)}&text=${encodeURIComponent(dadosZap.msg_cliente)}`;
-        const linkProf = `https://api.whatsapp.com/send?phone=55${limparNum(dadosZap.whats_prof)}&text=${encodeURIComponent(dadosZap.msg_prof)}`;
-
-        // Dispara a primeira aba (Cliente)
-        const win1 = window.open(linkCliente, '_blank');
-
-        // Aguarda 1.2 segundos para disparar a segunda (Profissional)
-        // Isso evita que o navegador ache que é um erro e bloqueie a segunda janela
-        setTimeout(() => {
-            const win2 = window.open(linkProf, '_blank');
-
-            if (!win1 || !win2) {
-                alert("Atenção: O navegador bloqueou as janelas automáticas. Por favor, clique no ícone de pop-up na barra de endereços e escolha 'Sempre permitir'.");
+            if (!profId) {
+                alert("Por favor, selecione um profissional!");
+                return;
             }
-        }, 1200);
-        {% endif %}
-        });
+
+            const profNome = select.options[select.selectedIndex].getAttribute('data-nome');
+            const profWhats = select.options[select.selectedIndex].getAttribute('data-whats');
+
+            try {
+                // 1. Faz o vínculo via Fetch para o Python sem recarregar a página
+                const response = await fetch(`/vincular_chamado/${chamadoId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `profissional_selecionado=${profId}`
+                });
+
+                if (response.ok) {
+                    // 2. MONTA AS MENSAGENS EXATAMENTE COMO VOCÊ PEDIU
+                    const msgCliente = `O *${profNome}* irá solucionar o problema relatado no momento do cadastro. Aguarde alguns instantes que o Prof50+ entrará em contato para agendarem o horário.`;
+
+                    const msgProf = `O Sr(a) *${clienteNome}* está esperando um contato seu para agendarem um horário para que você solucione o problema relatado por ele: *${clienteProblema}*.\n\nNúmero do WhatsApp do cliente: ${clienteWhats}`;
+
+                    const limparNum = (n) => n.replace(/\D/g, '');
+
+                    const urlCliente = `https://api.whatsapp.com/send?phone=55${limparNum(clienteWhats)}&text=${encodeURIComponent(msgCliente)}`;
+                    const urlProf = `https://api.whatsapp.com/send?phone=55${limparNum(profWhats)}&text=${encodeURIComponent(msgProf)}`;
+
+                    // 3. DISPARO AUTOMÁTICO DAS JANELAS
+                    alert(`✅ Profissional ${profNome} vinculado! Abrindo comunicações...`);
+
+                    window.open(urlCliente, '_blank');
+
+                    setTimeout(() => {
+                        window.open(urlProf, '_blank');
+                        window.location.reload(); // Recarrega para atualizar a tabela
+                    }, 1200);
+
+                } else {
+                    alert("❌ Erro ao salvar vínculo no servidor.");
+                }
+            } catch (error) {
+                console.error("Erro:", error);
+                alert("❌ Falha na conexão com o servidor.");
+            }
+        }
     </script>
 </body>
 
