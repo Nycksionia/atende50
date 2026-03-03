@@ -39,6 +39,10 @@
                 class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
                 <i class="fas fa-list-ul w-5 text-blue-400"></i> Chamados
             </a>
+            <a href="{{ url_for('gestao_problemas') }}"
+                class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
+                <i class="fas fa-exclamation-triangle w-5 text-orange-500"></i> Gestão de Problemas
+            </a>
         </nav>
 
         <div class="p-4 border-t border-slate-800 mt-auto">
@@ -55,8 +59,87 @@
         </header>
 
         <div class="p-10 overflow-y-auto h-full">
-            <h1 class="text-2xl font-bold text-slate-800">Painel de Controle</h1>
-            <p class="text-slate-500 mt-2">Selecione uma opção no menu lateral para gerenciar o portal.</p>
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-800">Gestão de Problemas</h1>
+                <p class="text-slate-500 mt-2">Acompanhe o que os clientes relatam e quem está resolvendo.</p>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-xs font-bold">
+                            <tr>
+                                <th class="p-5">Cliente / Contato</th>
+                                <th class="p-5">O Problema & Solução Esperada</th>
+                                <th class="p-5 text-center">Status Atual</th>
+                                <th class="p-5">Prof50+ Responsável</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            {% for chamado in chamados %}
+                            <tr class="hover:bg-blue-50/50 transition">
+                                <td class="p-5">
+                                    <div class="font-bold text-slate-800">{{ chamado.cliente.nome }}</div>
+                                    <div class="text-xs text-slate-400">CPF: {{ chamado.cliente.cpf }}</div>
+                                    <div class="text-sm text-blue-600 font-medium">{{ chamado.cliente.whatsapp }}</div>
+                                </td>
+
+                                <td class="p-5 max-w-md">
+                                    <div class="text-slate-700 font-semibold text-sm">Problema:</div>
+                                    <p class="text-slate-600 text-sm mb-2 italic">"{{ chamado.descricao_problema }}"</p>
+                                    <div class="text-slate-700 font-semibold text-sm">Expectativa do Cliente:</div>
+                                    <p class="text-blue-700 text-sm font-medium">{{ chamado.cliente.expectativa or 'Não
+                                        informada' }}</p>
+                                </td>
+
+                                <td class="p-5 text-center">
+                                    {# Usamos .lower() para evitar problemas com maiúsculas/minúsculas #}
+                                    {% set s = chamado.status.lower() %}
+
+                                    {% if s == 'pendente' %}
+                                    <span
+                                        class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-orange-100 text-orange-600">Pendente</span>
+                                    {% elif s == 'em atendimento' or s == 'em andamento' %}
+                                    <span
+                                        class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-blue-100 text-blue-600">Em
+                                        Atendimento</span>
+                                    {% elif s == 'concluído' or s == 'concluido' %}
+                                    <span
+                                        class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-green-100 text-green-600">Concluído</span>
+                                    {% elif s == 'cancelado' %}
+                                    <span
+                                        class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-red-100 text-red-600">Cancelado</span>
+                                    {% else %}
+                                    {# Se não for nenhum desses, mostra o texto original em cinza #}
+                                    <span
+                                        class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-500">{{
+                                        chamado.status }}</span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="p-5">
+                                    {% if chamado.status != 'Pendente' and chamado.profissional %}
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold">
+                                            {{ chamado.profissional.nome[:1] }}
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-bold text-slate-700">{{ chamado.profissional.nome
+                                                }}</div>
+                                            <div class="text-xs text-slate-500">{{ chamado.profissional.apelido }}</div>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-slate-400 italic text-sm">Aguardando vínculo...</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </main>
 

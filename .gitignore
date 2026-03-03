@@ -1,0 +1,20 @@
+# Bancos de dados locais
+*.db
+atende50.db
+
+# Pastas de ambiente virtual
+venv/
+env/
+__pycache__/
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# PASTAS DE SESSÃO DO WHATSAPP (O que está causando o erro)
+.wwebjs_auth/
+.wwebjs_cache/
+auth/
+session/
+Default/
+DevToolsActivePort

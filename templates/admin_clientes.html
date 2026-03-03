@@ -39,6 +39,11 @@
                 class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
                 <i class="fas fa-list-ul w-5 text-blue-400"></i> Chamados
             </a>
+            <a href="{{ url_for('gestao_problemas') }}"
+                class="flex items-center gap-3 p-3 rounded-xl transition {% if pagina_ativa == 'problemas' %}bg-blue-700 font-bold text-white{% else %}hover:bg-slate-800 text-slate-300{% endif %}">
+                <i class="fas fa-exclamation-triangle w-5 text-orange-500"></i>
+                Gestão de Problemas
+            </a>
         </nav>
 
         <div class="p-4 border-t border-slate-800 mt-auto">
@@ -82,11 +87,22 @@
                             {% for cliente in clientes %}
                             <tr class="hover:bg-blue-50 cursor-pointer transition"
                                 onclick="abrirModal('{{ cliente.nome }}', '{{ cliente.whatsapp }}', '{{ cliente.endereco }}', '{{ cliente.cpf }}')">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-700">{{
-                                    cliente.nome }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ cliente.whatsapp }}
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-700">
+                                    {{ cliente.nome }}
                                 </td>
-                                <td class="px-6 py-4 text-sm text-slate-600">{{ cliente.problema[:60] }}...</td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                    {{ cliente.whatsapp }}
+                                </td>
+
+                                <td class="px-6 py-4 text-sm text-slate-600">
+                                    <span
+                                        class="bg-blue-50 text-blue-600 px-2 py-1 rounded-lg border border-blue-100 font-medium">
+                                        <i class="fas fa-briefcase mr-1"></i> {{ cliente.chamados|length }} pedido(s)
+                                    </span>
+                                </td>
+
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <span
                                         class="px-3 py-1 text-[10px] font-black rounded-full bg-yellow-100 text-yellow-700 uppercase">

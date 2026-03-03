@@ -7,6 +7,23 @@
     <title>Solicitar Atendimento | Atende50+</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @keyframes bounce-slow {
+
+            0%,
+            100% {
+                transform: translateY(-5px);
+            }
+
+            50% {
+                transform: translateY(5px);
+            }
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 2s infinite;
+        }
+    </style>
 </head>
 
 <body class="bg-slate-50 font-sans">
@@ -17,7 +34,7 @@
                 class="text-2xl font-black text-blue-700 tracking-tighter hover:opacity-80 transition">
                 <i class="fas fa-arrow-left text-sm mr-2"></i>ATENDE<span class="text-orange-500">50+</span>
             </a>
-            <span class="text-slate-500 hidden md:block italic">Portal de Experiência</span>
+            <span class="text-slate-500 hidden md:block italic">Portal de Experiência do Cliente</span>
         </div>
     </nav>
 
@@ -34,39 +51,54 @@
                 <p class="text-orange-100">Descreva seu problema e encontraremos o Prof50+ ideal para você.</p>
             </div>
 
-            <form action="{{ url_for('salvar_pedido') }}" method="POST">
+            <form action="{{ url_for('salvar_pedido') }}" method="POST" id="formCadastro">
                 <div class="p-6 md:p-10 space-y-10">
 
                     <section>
-                        <h2 class="text-xl font-bold text-slate-800 mb-6 border-b pb-2 flex items-center">
+                        <h2 class="text-xl font-bold text-slate-800 mb-8 border-b pb-2 flex items-center">
                             <span
                                 class="bg-orange-100 text-orange-600 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-2">1</span>
-                            Seus Dados
+                            Identificação Inicial
                         </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <div class="max-w-md mx-auto mb-10 text-center relative">
+                            <div
+                                class="absolute -top-12 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] font-black px-4 py-1.5 rounded-full animate-bounce-slow uppercase shadow-lg">
+                                Comece digitando seu CPF <i class="fas fa-arrow-down ml-1"></i>
+                            </div>
+
+                            <label class="block text-sm font-bold text-slate-700 mb-3">CPF do Solicitante</label>
+                            <div class="relative group">
+                                <input type="text" name="cpf_cliente" id="cpf_input" required
+                                    class="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all outline-none text-center text-xl font-bold tracking-widest text-slate-700"
+                                    placeholder="000.000.000-00">
+                                <div
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                                    <i class="fas fa-id-card text-2xl"></i>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs mt-3 italic">Seus dados serão carregados automaticamente se
+                                já for cadastrado.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-slate-50">
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-semibold text-slate-600 mb-1">Nome Completo</label>
-                                <input type="text" name="nome_cliente" required
-                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition outline-none"
-                                    placeholder="Como podemos te chamar?">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-600 mb-1">CPF</label>
-                                <input type="text" name="cpf_cliente" required
+                                <input type="text" name="nome_cliente" id="nome_input" required
                                     class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 transition outline-none"
-                                    placeholder="000.000.000-00">
+                                    placeholder="Como podemos te chamar?">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-slate-600 mb-1">WhatsApp para
                                     Contato</label>
-                                <input type="tel" name="whatsapp_cliente" required
+                                <input type="tel" name="whatsapp_cliente" id="whatsapp_input" required
                                     class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 transition outline-none"
                                     placeholder="(00) 90000-0000">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-semibold text-slate-600 mb-1">Endereço Completo (Onde
-                                    será o serviço?)</label>
-                                <input type="text" name="endereco_cliente" required
+                                <label class="block text-sm font-semibold text-slate-600 mb-1">Endereço Completo do
+                                    Serviço</label>
+                                <input type="text" name="endereco_cliente" id="endereco_input" required
                                     class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 transition outline-none"
                                     placeholder="Rua, número, bairro e cidade">
                             </div>
@@ -83,7 +115,7 @@
                             <div>
                                 <label class="block text-sm font-semibold text-slate-600 mb-1">Qual problema você está
                                     enfrentando?</label>
-                                <textarea name="problema" rows="4" required
+                                <textarea name="problema" id="problema_input" rows="4" required
                                     class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 transition outline-none"
                                     placeholder="Ex: Minha lâmpada da sala não liga, ou meu computador está com a tela azul..."></textarea>
                             </div>
@@ -102,19 +134,102 @@
                             class="w-full bg-blue-700 hover:bg-blue-800 text-white font-black py-5 rounded-2xl text-xl shadow-lg shadow-blue-200 transition-all active:scale-95">
                             SOLICITAR SOLUÇÃO AGORA
                         </button>
-                        <div class="flex items-center justify-center gap-2 mt-6 text-slate-400 text-sm">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Seus dados estão seguros e serão enviados a um profissional qualificado.</span>
-                        </div>
                     </div>
                 </div>
             </form>
         </div>
     </main>
 
-    <footer class="text-center pb-12 text-slate-400 text-sm">
-        Atende50+ | Conectando problemas a soluções experientes.
-    </footer>
+    <div id="modalCliente" class="fixed inset-0 bg-slate-900/60 hidden flex items-center justify-center z-50 px-4">
+        <div
+            class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full border-t-8 border-blue-600 animate-in fade-in zoom-in duration-300">
+            <div class="text-center mb-6">
+                <div
+                    class="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-check text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800">Cadastro Encontrado!</h3>
+                <p class="text-slate-500 mt-2">Olá! Já temos seus dados em nosso sistema. Deseja usá-los?</p>
+            </div>
+
+            <div class="bg-slate-50 p-5 rounded-2xl mb-8 border border-slate-100">
+                <div class="mb-3">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-widest">Nome</span>
+                    <p id="modalNome" class="text-slate-700 font-bold"></p>
+                </div>
+                <div>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-widest">WhatsApp</span>
+                    <p id="modalWhats" class="text-blue-600 font-bold"></p>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button onclick="confirmarCadastroAntigo()"
+                    class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black hover:bg-blue-700 transition shadow-lg shadow-blue-100 uppercase tracking-tighter">
+                    Sim, usar meus dados
+                </button>
+                <button onclick="fecharModal()"
+                    class="w-full bg-slate-100 text-slate-500 py-4 rounded-2xl font-bold hover:bg-slate-200 transition text-sm">
+                    Não, quero alterar o CPF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dadosAntigos = {};
+
+        // 1. Monitora o campo de CPF para buscar dados
+        document.getElementById('cpf_input').addEventListener('blur', async function () {
+            const cpf = this.value.replace(/\D/g, '');
+
+            if (cpf.length === 11) {
+                try {
+                    const response = await fetch(`/buscar_cliente/${cpf}`);
+                    const data = await response.json();
+
+                    if (data.encontrado) {
+                        dadosAntigos = data;
+                        document.getElementById('modalNome').innerText = data.nome;
+                        document.getElementById('modalWhats').innerText = data.whatsapp;
+                        document.getElementById('modalCliente').classList.remove('hidden');
+                        document.getElementById('modalCliente').classList.add('flex');
+                    }
+                } catch (error) {
+                    console.error("Erro ao buscar cliente:", error);
+                }
+            }
+        });
+
+        // 2. Confirmação e Bloqueio de campos (Regra do Profissional)
+        function confirmarCadastroAntigo() {
+            const nomeInput = document.getElementById('nome_input');
+            const whatsInput = document.getElementById('whatsapp_input');
+            const endInput = document.getElementById('endereco_input');
+            const cpfInput = document.getElementById('cpf_input');
+
+            // Preenche os campos
+            nomeInput.value = dadosAntigos.nome;
+            whatsInput.value = dadosAntigos.whatsapp;
+            endInput.value = dadosAntigos.endereco;
+
+            // Bloqueia para edição (Read-only + Estilo visual)
+            const campos = [nomeInput, whatsInput, endInput, cpfInput];
+            campos.forEach(input => {
+                input.readOnly = true;
+                input.classList.add('bg-slate-100', 'text-slate-500', 'cursor-not-allowed', 'border-slate-100');
+            });
+
+            fecharModal();
+            // Pula para o campo de problema
+            document.getElementById('problema_input').focus();
+        }
+
+        function fecharModal() {
+            document.getElementById('modalCliente').classList.add('hidden');
+            document.getElementById('modalCliente').classList.remove('flex');
+        }
+    </script>
 
 </body>
 

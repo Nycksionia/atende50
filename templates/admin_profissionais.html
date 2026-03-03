@@ -38,6 +38,11 @@
                 class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
                 <i class="fas fa-list-ul w-5 text-blue-400"></i> Chamados
             </a>
+            <a href="{{ url_for('gestao_problemas') }}"
+                class="flex items-center gap-3 p-3 rounded-xl transition {% if pagina_ativa == 'problemas' %}bg-blue-700 font-bold text-white{% else %}hover:bg-slate-800 text-slate-300{% endif %}">
+                <i class="fas fa-exclamation-triangle w-5 text-orange-500"></i>
+                Gestão de Problemas
+            </a>
         </nav>
 
         <div class="p-4 border-t border-slate-800 mt-auto">
@@ -150,6 +155,7 @@
             document.getElementById('modalProf').classList.add('flex');
         }
     </script>
+
 </body>
 
 </html>

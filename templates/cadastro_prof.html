@@ -7,6 +7,23 @@
     <title>Cadastro Prof50+ | Atende50+</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @keyframes bounce-slow {
+
+            0%,
+            100% {
+                transform: translateY(-5px);
+            }
+
+            50% {
+                transform: translateY(5px);
+            }
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 2s infinite;
+        }
+    </style>
 </head>
 
 <body class="bg-slate-100 font-sans">
@@ -17,159 +34,296 @@
                 class="text-2xl font-black text-blue-700 tracking-tighter hover:opacity-80 transition">
                 <i class="fas fa-arrow-left text-sm mr-2"></i>ATENDE<span class="text-orange-500">50+</span>
             </a>
-            <span class="text-slate-500 hidden md:block italic">Portal de Experiência</span>
+            <span class="text-slate-500 hidden md:block italic">Portal do Profissional Experiente</span>
         </div>
     </nav>
 
     <main class="max-w-4xl mx-auto my-10 px-4">
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
-            <div class="bg-blue-700 p-8 text-white text-center">
-                <h1 class="text-3xl font-bold mb-2">Seja um Prof50+</h1>
-                <p class="opacity-80">Preencha seus dados abaixo para começar a oferecer seus serviços no Portal.</p>
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+            <div class="bg-blue-700 p-10 text-white text-center">
+                <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-tie text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold mb-2 uppercase tracking-tighter">Seja um Prof50+</h1>
+                <p class="opacity-90 max-w-md mx-auto">Sua experiência vale muito. Cadastre-se para conectar-se a
+                    clientes que valorizam seu trabalho.</p>
             </div>
 
-            <form action="{{ url_for('salvar_profissional') }}" method="POST">
-                <div class="p-6 md:p-10 space-y-8">
+            <form action="{{ url_for('salvar_profissional') }}" method="POST" id="formProf">
+                <div class="p-6 md:p-10 space-y-12">
 
-                    <div class="border-b border-slate-200 pb-8">
-                        <h2 class="text-xl font-semibold text-slate-800 mb-6 flex items-center">
+                    <section>
+                        <div class="max-w-md mx-auto mb-12 text-center relative pt-10">
+                            <div
+                                class="absolute top-0 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full animate-bounce-slow uppercase shadow-lg z-10">
+                                Comece digitando seu CPF <i class="fas fa-arrow-down ml-1"></i>
+                            </div>
+
+                            <label
+                                class="block text-sm font-black text-slate-700 mb-3 uppercase tracking-widest">Identificação
+                                Obrigatória</label>
+                            <div class="relative group">
+                                <input type="text" name="cpf" id="campoCpf" required
+                                    class="w-full pl-12 pr-4 py-5 bg-white border-4 border-slate-100 rounded-2xl focus:border-blue-600 focus:ring-8 focus:ring-blue-100 transition-all outline-none text-center text-2xl font-black tracking-widest text-blue-700 shadow-inner"
+                                    placeholder="000.000.000-00">
+                                <div
+                                    class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600 transition-colors">
+                                    <i class="fas fa-id-card text-2xl"></i>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-xs mt-4 italic">Seus dados serão carregados se você já tiver
+                                cadastro conosco.</p>
+                        </div>
+
+                        <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center border-b pb-2">
                             <i class="fas fa-user-circle mr-2 text-blue-600"></i> Dados Pessoais
                         </h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-slate-700">Nome Completo</label>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Nome Completo</label>
                                 <input type="text" name="nome" required
-                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
                                     placeholder="Ex: João da Silva">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700">Como prefere ser chamado
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Como prefere ser chamado
                                     (Apelido)</label>
                                 <input type="text" name="apelido"
-                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
                                     placeholder="Ex: Mestre João">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700">CPF</label>
-                                <input type="text" name="cpf" required
-                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                                    placeholder="000.000.000-00">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border-b border-slate-200 pb-8 mt-8">
-                        <h2 class="text-xl font-semibold text-slate-800 mb-6 flex items-center">
-                            <i class="fas fa-briefcase mr-2 text-blue-600"></i> Experiência
-                        </h2>
-                        <div class="space-y-4">
-                            <label class="block text-sm font-medium text-slate-700">
-                                Selecione até 3 especialidades (Segure Ctrl para selecionar mais de uma):
-                            </label>
-                            <select name="experiencia" id="experiencia" multiple required
-                                class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition h-40">
-                                <option value="Manutenção Predial">Manutenção Predial</option>
-                                <option value="Manutenção Hidráulica">Manutenção Hidráulica</option>
-                                <option value="Manutenção Equipamentos de Informática">Manutenção Equipamentos de
-                                    Informática</option>
-                                <option value="Manutenção em Vidros/Vidraças">Manutenção em Vidros/Vidraças</option>
-                                <option value="Manutenção em Jardim">Manutenção em Jardim</option>
-                                <option value="Manutenção em Piscina">Manutenção em Piscina</option>
-                                <option value="Manutenção em Alvenaria">Manutenção em Alvenaria</option>
-                            </select>
-                            <p class="text-xs text-slate-400 italic">* Utilize o campo acima para destacar suas
-                                principais habilidades.</p>
-                        </div>
-                    </div>
-
-                    <div class="border-b border-slate-200 pb-8">
-                        <h2 class="text-xl font-semibold text-slate-800 mb-6 flex items-center">
-                            <i class="fas fa-phone-alt mr-2 text-blue-600"></i> Contato
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700">Telefone Fixo</label>
-                                <input type="tel" name="fone_fixo"
-                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                                    placeholder="(00) 0000-0000">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700">WhatsApp (Celular)</label>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">WhatsApp (Celular)</label>
                                 <input type="tel" name="whatsapp" required
-                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
                                     placeholder="(00) 90000-0000">
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div>
-                        <h2 class="text-xl font-semibold text-slate-800 mb-6 flex items-center">
-                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i> Endereço Completo
+                    <section class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                        <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center">
+                            <i class="fas fa-briefcase mr-2 text-blue-600"></i> Suas Especialidades
+                        </h2>
+                        <div class="space-y-4">
+                            <label class="block text-sm font-medium text-slate-700">
+                                Selecione até 3 habilidades principais (Ctrl para multi-seleção):
+                            </label>
+                            <select name="experiencia" id="experiencia" multiple required
+                                class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition h-44 shadow-sm">
+                                <option value="Manutenção Predial">Manutenção Predial</option>
+                                <option value="Manutenção Hidráulica">Manutenção Hidráulica</option>
+                                <option value="Manutenção Equipamentos de Informática">TI / Informática</option>
+                                <option value="Manutenção em Vidros/Vidraças">Vidraçaria</option>
+                                <option value="Manutenção em Jardim">Jardinagem</option>
+                                <option value="Manutenção em Piscina">Piscina</option>
+                                <option value="Manutenção em Alvenaria">Pedreiro / Alvenaria</option>
+                            </select>
+                            <p class="text-[11px] text-slate-400 font-medium">* Isso ajudará o sistema a te recomendar
+                                para os chamados certos.</p>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center border-b pb-2">
+                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i> Onde você atua?
                         </h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-slate-700">Rua/Logradouro e Número</label>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Rua e Número</label>
                                 <input type="text" name="endereco" required
-                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                                    placeholder="Rua das Flores, 123">
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700">Bairro</label>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Bairro</label>
                                 <input type="text" name="bairro" required
-                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700">Cidade</label>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Cidade</label>
                                 <input type="text" name="cidade" required
-                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700">Estado (UF)</label>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Estado</label>
                                 <select name="uf"
-                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
                                     <option value="GO">Goiás</option>
                                     <option value="MT">Mato Grosso</option>
                                     <option value="DF">Distrito Federal</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700">CEP</label>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">CEP</label>
                                 <input type="text" name="cep" required
-                                    class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                                     placeholder="00000-000">
                             </div>
                         </div>
-                    </div>
+                    </section>
 
                     <div class="pt-10">
-                        <button type="submit"
-                            class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl text-lg shadow-lg transform transition hover:-translate-y-1 active:scale-95">
-                            <i class="fas fa-check-circle mr-2"></i> Concluir meu Cadastro
+                        <button type="submit" id="btnSubmit"
+                            class="w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-5 rounded-2xl text-xl shadow-xl shadow-orange-100 transition-all active:scale-95 uppercase tracking-tighter">
+                            <i class="fas fa-check-circle mr-2 text-2xl align-middle"></i> Concluir meu Cadastro
                         </button>
-                        <p class="text-center text-slate-400 text-sm mt-4">
-                            Ao se cadastrar, você concorda com os termos de uso do Portal Atende50+.
-                        </p>
                     </div>
                 </div>
             </form>
         </div>
     </main>
-    <script>
-        // Script para limitar a seleção em no máximo 3 itens
-        const select = document.getElementById('experiencia');
-        select.onchange = function () {
-            const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length > 3) {
-                alert("Por favor, selecione no máximo 3 áreas de experiência.");
-                // Desmarca a última opção selecionada
-                selectedOptions[selectedOptions.length - 1].selected = false;
-            }
-        };
-    </script>
-    <footer class="text-center pb-10 text-slate-500 text-sm">
-        &copy; 2026 Portal Atende50+ | Conectando Talentos
-    </footer>
 
+    <div id="modalProfFlutuante" class="fixed z-[100] hidden"
+        style="top: 15%; left: 50%; transform: translateX(-50%); width: 380px;">
+        <div class="bg-white rounded-3xl shadow-2xl border-4 border-blue-600 overflow-hidden select-none">
+            <div id="barraArraste" class="bg-blue-600 p-4 cursor-move flex justify-between items-center text-white">
+                <span class="font-black text-[10px] uppercase tracking-widest"><i class="fas fa-arrows-alt mr-2"></i>
+                    Mover Janela</span>
+                <button onclick="fecharModalFlutuante()" class="hover:text-orange-300 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-8 text-center">
+                <div
+                    class="bg-blue-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600">
+                    <i class="fas fa-id-badge text-4xl"></i>
+                </div>
+                <h3 class="text-2xl font-black text-slate-800 mb-2 leading-tight">Você já é de casa!</h3>
+                <p class="text-sm text-slate-500 mb-6">Encontramos seu cadastro. Deseja carregar suas informações?</p>
+                <div class="bg-slate-50 p-4 rounded-2xl mb-6 border border-slate-100 text-left">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Nome Identificado</p>
+                    <p id="pNomeInfo" class="text-slate-800 font-bold text-lg"></p>
+                </div>
+                <button onclick="confirmarDadosProf()"
+                    class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black hover:bg-blue-700 shadow-lg transition-all active:scale-95 mb-3 uppercase tracking-tighter">
+                    Sim, carregar dados
+                </button>
+                <button onclick="fecharModalFlutuante()"
+                    class="w-full bg-slate-100 text-slate-400 py-3 rounded-2xl font-bold hover:bg-slate-200 transition text-sm">
+                    Não, corrigir CPF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dadosEncontrados = {};
+
+        window.onload = function () {
+            bloquearTudoExcetoCPF();
+            document.getElementById('campoCpf').focus();
+        };
+
+        function bloquearTudoExcetoCPF() {
+            const campos = document.querySelectorAll('input:not([name="cpf"]), select, button[type="submit"]');
+            campos.forEach(campo => {
+                campo.disabled = true;
+                campo.classList.add('bg-slate-100', 'cursor-not-allowed', 'opacity-60');
+            });
+        }
+
+        function liberarCampos(isNovoCadastro) {
+            const camposParaLiberar = ['experiencia', 'fone_fixo', 'whatsapp', 'endereco', 'bairro', 'cidade', 'uf', 'cep'];
+            if (isNovoCadastro) { camposParaLiberar.push('nome', 'apelido'); }
+
+            camposParaLiberar.forEach(name => {
+                const el = document.querySelector(`[name="${name}"]`);
+                if (el) {
+                    el.disabled = false;
+                    el.classList.remove('bg-slate-100', 'cursor-not-allowed', 'opacity-60');
+                    el.classList.add('bg-white');
+                }
+            });
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = false;
+            btn.classList.remove('bg-slate-100', 'cursor-not-allowed', 'opacity-60');
+        }
+
+        document.getElementById('campoCpf').addEventListener('blur', async function () {
+            const cpf = this.value.replace(/\D/g, '');
+            if (cpf.length === 11) {
+                try {
+                    const response = await fetch(`/buscar_profissional/${cpf}`);
+                    const data = await response.json();
+                    if (data.encontrado) {
+                        dadosEncontrados = data;
+                        document.getElementById('pNomeInfo').innerText = data.nome;
+                        document.getElementById('modalProfFlutuante').classList.remove('hidden');
+                    } else {
+                        liberarCampos(true);
+                    }
+                } catch (e) { console.error(e); }
+            }
+        });
+
+        function confirmarDadosProf() {
+            // 1. Preenchimento de Identidade
+            document.querySelector('input[name="nome"]').value = dadosEncontrados.nome;
+            document.querySelector('input[name="apelido"]').value = dadosEncontrados.apelido || '';
+
+            // 2. Preenchimento de Contato e Localização
+            document.querySelector('input[name="whatsapp"]').value = dadosEncontrados.whatsapp;
+            document.querySelector('input[name="endereco"]').value = dadosEncontrados.endereco || '';
+            document.querySelector('input[name="bairro"]').value = dadosEncontrados.bairro || '';
+            document.querySelector('input[name="cidade"]').value = dadosEncontrados.cidade;
+            document.querySelector('select[name="uf"]').value = dadosEncontrados.uf || 'GO';
+            document.querySelector('input[name="cep"]').value = dadosEncontrados.cep || '';
+
+            // 3. RECUPERAÇÃO DAS ESPECIALIDADES (O que faltava!)
+            if (dadosEncontrados.experiencia) {
+                // Transforma "Pintura, Elétrica" em ['Pintura', 'Elétrica']
+                const listaExp = dadosEncontrados.experiencia.split(', ');
+                const selectExp = document.getElementById('experiencia');
+
+                // Percorre cada opção do select e marca como selecionada se estiver na lista
+                Array.from(selectExp.options).forEach(option => {
+                    option.selected = listaExp.includes(option.value);
+                });
+            }
+
+            // 4. Bloqueio de campos de Identidade
+            ['nome', 'cpf', 'apelido'].forEach(name => {
+                const input = document.querySelector(`input[name="${name}"]`);
+                if (input) {
+                    input.readOnly = true;
+                    input.disabled = false;
+                    input.classList.add('bg-slate-200', 'text-slate-500', 'cursor-not-allowed');
+                }
+            });
+
+            // 5. Finalização
+            liberarCampos(false);
+            fecharModalFlutuante();
+
+            // Foca no campo de experiência para o profissional conferir
+            document.getElementById('experiencia').focus();
+        }
+
+        function fecharModalFlutuante() {
+            document.getElementById('modalProfFlutuante').classList.add('hidden');
+        }
+
+        // Lógica Draggable
+        dragElement(document.getElementById("modalProfFlutuante"));
+        function dragElement(elmnt) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            const header = document.getElementById("barraArraste");
+            if (header) { header.onmousedown = dragMouseDown; }
+            function dragMouseDown(e) {
+                e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+            function elementDrag(e) {
+                e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+                pos3 = e.clientX; pos4 = e.clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                elmnt.style.transform = "none";
+            }
+            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
+        }
+    </script>
 </body>
 
 </html>

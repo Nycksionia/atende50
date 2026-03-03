@@ -1,3 +1,4 @@
+import requests
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
@@ -29,6 +30,8 @@ class Profissional(db.Model):
     whatsapp = db.Column(db.String(20), nullable=False)
     endereco = db.Column(db.String(200))
     cidade = db.Column(db.String(100))
+    bairro = db.Column(db.String(100))
+    cep = db.Column(db.String(20))
     experiencia = db.Column(db.String(255))
     # O backref='profissional' cria o link automático
     chamados = db.relationship('Chamado', backref='profissional', lazy=True)
@@ -36,30 +39,59 @@ class Profissional(db.Model):
 class ClienteLead(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
-    cpf = db.Column(db.String(14), nullable=False)
+    cpf = db.Column(db.String(14), nullable=False, unique=True) # CPF único
     whatsapp = db.Column(db.String(20), nullable=False)
     endereco = db.Column(db.String(200))
-    problema = db.Column(db.Text, nullable=False)
-    # O backref='cliente' cria o link automático
+    # REMOVA o campo 'problema' daqui!
     chamados = db.relationship('Chamado', backref='cliente', lazy=True)
-    
+
 class Chamado(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data_abertura = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(20), default='Pendente')
     valor_total = db.Column(db.Float, default=0.0)
     
-    # Chaves Estrangeiras
+    # ADICIONE o campo aqui:
+    descricao_problema = db.Column(db.Text, nullable=False) 
+    
     profissional_id = db.Column(db.Integer, db.ForeignKey('profissional.id'), nullable=True)
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente_lead.id'), nullable=False)
+    
+def disparar_whatsapp_automatico(numero, mensagem):
+    """
+    Envia o comando para o servidor Node.js (porta 3000) 
+    disparar a mensagem via WhatsApp.
+    """
+    # Remove parênteses, espaços e traços do número
+    numero_limpo = "".join(filter(str.isdigit, str(numero)))
+    
+    # Adiciona o 55 se o usuário não tiver colocado (padrão Brasil)
+    #if not numero_limpo.startswith("55"):
+    #    numero_limpo = "55" + numero_limpo
 
-    # IMPORTANTE: No SQLAlchemy, quando você usa o 'backref' no modelo pai, 
-    # ele injeta automaticamente o objeto 'cliente' e 'profissional' aqui dentro.
-    # O erro ocorria porque o banco precisava ser reiniciado para reconhecer essa ligação.
+    url = "http://127.0.0.1:3000/enviar"
+    #localhost:3000/enviar"
+    payload = {
+        "numero": numero_limpo,
+        "mensagem": mensagem
+    }
 
-# ... (restante das rotas permanece igual)
+    try:
+        response = requests.post(url, json=payload, timeout=5)
+        return response.status_code == 200
+    except Exception as e:
+        print(f"Erro ao falar com o motor de mensagens: {e}")
+        return False
+
+def disparar_whatsapp(numero, texto):
+    try:
+        # O Python avisa o Node.js para enviar a mensagem
+        requests.post('http://localhost:3000/enviar', 
+                      json={'numero': numero, 'mensagem': texto})
+    except Exception as e:
+        print(f"Falha ao conectar no motor de mensagens: {e}")
+
 # --- ROTAS ---
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -139,6 +171,25 @@ def admin_profissionais():
     todos_profs = Profissional.query.all()
     return render_template('admin_profissionais.html', profissionais=todos_profs)
 
+@app.route('/buscar_profissional/<cpf>')
+def buscar_profissional(cpf):
+    prof = Profissional.query.filter_by(cpf=cpf).first()
+    if prof:
+        return {
+"encontrado": True,
+            "nome": prof.nome, #
+            "apelido": prof.apelido,
+            "whatsapp": prof.whatsapp, #
+            "fone_fixo": getattr(prof, 'fone_fixo', ''),
+            "endereco": prof.endereco, #
+            "bairro": getattr(prof, 'bairro', ''),
+            "cidade": prof.cidade, #
+            "uf": getattr(prof, 'uf', 'GO'),
+            "cep": getattr(prof, 'cep', ''),
+            "experiencia": prof.experiencia #
+        }
+    return {"encontrado": False}
+
 @app.route('/chamados')
 def listar_chamados():
     if not session.get('logado'):
@@ -152,31 +203,35 @@ def listar_chamados():
         
         return render_template('chamados.html', 
                                chamados=todos_chamados, 
-                               profissionais=todos_profs)
+                               profissionais=todos_profs,
+                               pagina_ativa='chamados') # <--- Adicione isso aqui
     except Exception as e:
         print(f"Erro ao listar chamados: {e}")
         return f"Erro interno: {e}", 500
-    
-# Rota para vincular um profissional a um chamado
-@app.route('/vincular_chamado/<int:chamado_id>', methods=['POST'])
-def vincular_chamado(chamado_id):
-    if not session.get('logado'):
-        return "Não autorizado", 401
         
-    id_prof = request.form.get('profissional_selecionado')
-    chamado = Chamado.query.get(chamado_id)
+def disparar_whatsapp_motor(numero, mensagem):
+    """
+    Versão de teste: APENAS limpa caracteres especiais.
+    NÃO adiciona 55, NÃO adiciona 9.
+    """
+    # Mantém apenas os dígitos que estão no banco de dados
+    n = "".join(filter(str.isdigit, str(numero)))
     
-    if chamado and id_prof:
-        # Atualiza o banco de dados
-        chamado.profissional_id = id_prof
-        chamado.status = 'Em Andamento'
-        db.session.commit()
-        
-        # Responde com sucesso para o JavaScript assumir o controle
-        return "Sucesso", 200
-    
-    return "Erro", 400
+    # Se o número começar com 0 (ex: 062...), remove apenas o zero
+    if n.startswith("0"):
+        n = n[1:]
 
+    url = "http://localhost:3000/enviar"
+    payload = {"numero": n, "mensagem": mensagem}
+
+    try:
+        requests.post(url, json=payload, timeout=5)
+        print(f"🚀 Enviando para o Node exatamente como está no banco: {n}")
+        return True
+    except Exception as e:
+        print(f"❌ Erro de conexão: {e}")
+        return False
+      
 # Rota para atualizar apenas o status (Pendente, Concluído, etc)
 @app.route('/atualizar_status_chamado/<int:chamado_id>', methods=['POST'])
 def atualizar_status_chamado(chamado_id):
@@ -193,69 +248,118 @@ def atualizar_status_chamado(chamado_id):
     
     return redirect(url_for('listar_chamados'))
 
+@app.route('/admin/gestao-problemas')
+def gestao_problemas():
+    # Busca todos os chamados ordenados pelos mais recentes
+    chamados = Chamado.query.order_by(Chamado.id.desc()).all()
+    return render_template('area_restrita.html', chamados=chamados, pagina_ativa='problemas')
+
 # --- ROTAS DE SALVAMENTO ---
 
 @app.route('/salvar-profissional', methods=['POST'])
 def salvar_profissional():
-    nome = request.form.get('nome')
     cpf = request.form.get('cpf')
-    whatsapp = request.form.get('whatsapp')
-    lista_experiencia = request.form.getlist('experiencia')
-    experiencia_string = ", ".join(lista_experiencia)
+    nome = request.form.get('nome')
+    
+    # 1. Tenta buscar se o profissional já existe
+    prof = Profissional.query.filter_by(cpf=cpf).first()
 
     try:
-        novo_prof = Profissional(
-            nome=nome,
-            apelido=request.form.get('apelido'),
-            cpf=cpf,
-            whatsapp=whatsapp,
-            endereco=request.form.get('endereco'),
-            cidade=request.form.get('cidade'),
-            experiencia=experiencia_string
-        )
-        db.session.add(novo_prof)
+        if prof:
+            # MODO ATUALIZAÇÃO: O CPF já existe, vamos atualizar os dados editáveis
+            # O nome e CPF geralmente não mudam, mas atualizamos por segurança se necessário
+            prof.nome = nome 
+            status_msg = f'✅ Cadastro de {prof.nome} atualizado com sucesso!'
+        else:
+            # MODO NOVO CADASTRO: Cria um novo objeto
+            prof = Profissional(cpf=cpf, nome=nome)
+            db.session.add(prof)
+            status_msg = '✅ Novo profissional cadastrado com sucesso!'
+
+        # 2. Atualiza os campos que você liberou para edição no formulário
+        prof.apelido = request.form.get('apelido')
+        prof.whatsapp = request.form.get('whatsapp')
+        prof.endereco = request.form.get('endereco')
+        prof.cidade = request.form.get('cidade')
+        
+        # Se você tiver esses campos no seu modelo Profissional, descomente abaixo:
+        # prof.bairro = request.form.get('bairro')
+        # prof.cep = request.form.get('cep')
+        # prof.uf = request.form.get('uf')
+
+        # Trata as especialidades (lista para string)
+        lista_experiencia = request.form.getlist('experiencia')
+        prof.experiencia = ", ".join(lista_experiencia)
+
         db.session.commit()
-        flash('Profissional cadastrado com sucesso!')
+        flash(status_msg)
         return redirect(url_for('index'))
+        
     except Exception as e:
         db.session.rollback()
-        flash('Erro ao salvar profissional.')
-        return redirect(url_for('index'))
+        print(f"❌ ERRO NO SALVAMENTO/UPDATE: {e}")
+        flash('Erro técnico ao processar os dados.')
+        return redirect(url_for('ir_para_cadastro_prof'))
+    
+@app.route('/buscar_cliente/<cpf>')
+def buscar_cliente(cpf):
+    cliente = ClienteLead.query.filter_by(cpf=cpf).first()
+    if cliente:
+        return {
+            "encontrado": True,
+            "nome": cliente.nome,
+            "whatsapp": cliente.whatsapp,
+            "endereco": cliente.endereco
+        }
+    return {"encontrado": False}
 
 @app.route('/salvar-pedido', methods=['POST'])
 def salvar_pedido():
     nome = request.form.get('nome_cliente')
+    cpf = request.form.get('cpf_cliente')
     whatsapp = request.form.get('whatsapp_cliente')
-    problema = request.form.get('problema')
+    problema_digitado = request.form.get('problema') # Captura o que foi escrito agora
     endereco = request.form.get('endereco_cliente') 
 
-    try:
-        novo_lead = ClienteLead(
-            nome=nome,
-            cpf=request.form.get('cpf_cliente'),
-            whatsapp=whatsapp,
-            endereco=endereco,
-            problema=problema
-        )
-        db.session.add(novo_lead)
-        db.session.flush() 
+    cliente = ClienteLead.query.filter_by(cpf=cpf).first()
 
+    try:
+        if cliente:
+            # Se já existe, apenas atualizamos os dados de contato se mudaram
+            cliente.whatsapp = whatsapp
+            cliente.endereco = endereco
+            flash(f'Bem-vindo de volta, {cliente.nome}!')
+        else:
+            # Se é novo, cria o cadastro do cliente
+            cliente = ClienteLead(
+                nome=nome,
+                cpf=cpf,
+                whatsapp=whatsapp,
+                endereco=endereco
+            )
+            db.session.add(cliente)
+            db.session.flush()
+
+        # O SEGREDO: Criamos o chamado com a descrição específica desta vez
         novo_chamado = Chamado(
-            cliente_id=novo_lead.id,
+            cliente_id=cliente.id,
+            descricao_problema=problema_digitado, # Salva o problema aqui!
             status='Pendente',
             valor_total=0.0
         )
         db.session.add(novo_chamado)
         db.session.commit()
-        flash('Solicitação enviada com sucesso!')
+        
+        flash('✅ Solicitação enviada com sucesso!')
         return redirect(url_for('index'))
+
     except Exception as e:
         db.session.rollback()
+        print(f"❌ ERRO AO SALVAR PEDIDO: {e}")
         flash('Erro ao processar pedido.')
-        return redirect(url_for('index'))
-
+        return redirect(url_for('ir_para_cadastro_cliente'))
+        
 # --- NOVAS ROTAS PARA CORRIGIR O ERRO 500 ---
-
 @app.route('/cadastro-profissional')
 def ir_para_cadastro_prof():
     return render_template('cadastro_prof.html')
@@ -303,6 +407,46 @@ with app.app_context():
             db.session.commit()
     except Exception as e:
         pass
+
+# Rota para vincular o profissional e disparar as mensagens automáticas
+@app.route('/vincular_chamado/<int:chamado_id>', methods=['POST'])
+def vincular_chamado(chamado_id):
+    if not session.get('logado'):
+        return "Não autorizado", 401
+        
+    id_prof = request.form.get('profissional_selecionado')
+    
+    # Busca o chamado e o profissional no banco de dados
+    chamado = Chamado.query.get(chamado_id)
+    profissional = Profissional.query.get(id_prof)
+    
+    if chamado and profissional:
+        # 1. Atualiza o banco de dados
+        chamado.profissional_id = id_prof
+        chamado.status = 'Em Andamento'
+        db.session.commit()
+
+        # 2. Prepara as mensagens (Estilo Card de Confirmação)
+        msg_cliente = (f"*PORTAL ATENDE50+ - CONFIRMAÇÃO*\n\n"
+                       f"Conectando a experiência de quem viveu com as necessidades de quem precisa."
+                       f"Olá, *{chamado.cliente.nome}*! O profissional *{profissional.nome}* "
+                       f"já foi escalado para seu atendimento.\n\n"
+                       f"Aguarde o contato para agendamento! ✅")
+
+        msg_prof = (f"*ATENDE50+ - NOVO SERVIÇO*\n\n"
+                    f"Conectando a experiência de quem viveu com as necessidades de quem precisa."
+                    f"Você foi vinculado ao chamado de: *{chamado.cliente.nome}*\n"
+                    f"📱 WhatsApp: {chamado.cliente.whatsapp}\n"
+                    f"🛠️ Serviço: {chamado.descricao_problema}\n\n"
+                    f"Entre em contato o mais breve possível! 🚀")
+        
+        # 3. CHAMA O MOTOR NODE.JS (O envio invisível)
+        disparar_whatsapp_motor(chamado.cliente.whatsapp, msg_cliente)
+        disparar_whatsapp_motor(profissional.whatsapp, msg_prof)
+        
+        return "Sucesso", 200
+    
+    return "Erro: Chamado ou Profissional não encontrado", 400
 
 # AJUSTE PARA O RENDER: Definir host e porta dinâmicos
 if __name__ == "__main__":
